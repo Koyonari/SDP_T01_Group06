@@ -84,4 +84,5 @@ namespace SDP_T01_Group06
             AnsiConsole.MarkupLine("[green]Managing the review of a document...[/]");
         }
     }
+    }
 }

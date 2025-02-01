@@ -2,7 +2,11 @@
 {
 	public class TechnicalReport : Document
 	{
-		public override void createBody()
+        public TechnicalReport(User owner) : base(owner)
+        {
+        }
+
+        public override void createBody()
 		{
 			Console.WriteLine("Created Technical Report body");
 		}

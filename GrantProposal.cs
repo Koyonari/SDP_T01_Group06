@@ -2,7 +2,11 @@
 {
 	public class GrantProposal : Document
 	{
-		public override void createBody()
+        public GrantProposal(User owner) : base(owner)
+        {
+        }
+
+        public override void createBody()
 		{
 			Console.WriteLine("Created Grant Proposal body");
 		}
