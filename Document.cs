@@ -105,6 +105,8 @@
 			Console.WriteLine("Footer added to document");
 		}
 
+		public abstract void editDocument();
+
 		public abstract void createBody();
 
 		public virtual void addCodeSnippet() { }

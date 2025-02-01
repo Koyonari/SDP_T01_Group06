@@ -6,46 +6,53 @@ namespace SDP_T01_Group06
     {
         static void Main(string[] args)
         {
-            AnsiConsole.Write(
-               new FigletText("Document Workflow System")
-                   .LeftJustified()
-                   .Color(Color.Blue));
-            while (true)
-            {
-                var selectedOption = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
-                        .Title("Document Workflow System")
-                        .PageSize(6)
-                        .AddChoices(
-                            "Create a new document",
-                            "Edit existing document",
-                            "View your documents",
-                            "Submit existing document for approval",
-                            "View existing document status",
-                            "Manage document review"));
+            User user = new User("John Doe");
+            User owner = new User("Alice");
+            Document techReport = new TechnicalReport(owner);
+            Document grantProposal = new GrantProposal(owner);
 
-                switch (selectedOption)
-                {
-                    case "Create a new document":
-                        CreateNewDocument();
-                        break;
-                    case "Edit existing document":
-                        EditExistingDocument();
-                        break;
-                    case "View your documents":
-                        ViewDocuments();
-                        break;
-                    case "Submit existing document for approval":
-                        SubmitDocumentForApproval();
-                        break;
-                    case "View existing document status":
-                        ViewDocumentStatus();
-                        break;
-                    case "Manage document review":
-                        ManageDocumentReview();
-                        break;
-                }
-            }
+            techReport.edit(); // Calls DraftState.edit(), then techReport.editContent()
+            grantProposal.edit(); // Calls DraftState.edit(), then grantProposal.editContent()
+            //AnsiConsole.Write(
+            //   new FigletText("Document Workflow System")
+            //       .LeftJustified()
+            //       .Color(Color.Blue));
+            //while (true)
+            //{
+            //    var selectedOption = AnsiConsole.Prompt(
+            //        new SelectionPrompt<string>()
+            //            .Title("Document Workflow System")
+            //            .PageSize(6)
+            //            .AddChoices(
+            //                "Create a new document",
+            //                "Edit existing document",
+            //                "View your documents",
+            //                "Submit existing document for approval",
+            //                "View existing document status",
+            //                "Manage document review"));
+
+            //    switch (selectedOption)
+            //    {
+            //        case "Create a new document":
+            //            CreateNewDocument();
+            //            break;
+            //        case "Edit existing document":
+            //            EditExistingDocument();
+            //            break;
+            //        case "View your documents":
+            //            ViewDocuments();
+            //            break;
+            //        case "Submit existing document for approval":
+            //            SubmitDocumentForApproval();
+            //            break;
+            //        case "View existing document status":
+            //            ViewDocumentStatus();
+            //            break;
+            //        case "Manage document review":
+            //            ManageDocumentReview();
+            //            break;
+            //    }
+            //}
         }
 
         static void CreateNewDocument()
@@ -83,6 +90,5 @@ namespace SDP_T01_Group06
             // Implement the logic to manage the review of a document
             AnsiConsole.MarkupLine("[green]Managing the review of a document...[/]");
         }
-    }
     }
 }

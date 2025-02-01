@@ -17,12 +17,8 @@ namespace SDP_T01_Group06
 
         public void edit()
         {
-            document.displayContent();
-            Console.WriteLine("Enter new document content:");
-            string newText = Console.ReadLine();
-            document.documentContent = newText;
             document.isEdited = true;
-            Console.WriteLine("Document content updated.");
+            document.editDocument();
         }
 
         public void addCollaborator(User collaborator)
