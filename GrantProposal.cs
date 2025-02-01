@@ -12,5 +12,10 @@ namespace SDP_T01_Group06
 		{
 			Console.WriteLine("Created Grant Proposal body");
 		}
+
+		public override void addBudgetBreakdown()
+		{
+			Console.WriteLine("Adding budget breakdown table...");
+		}
 	}
 }

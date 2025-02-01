@@ -13,6 +13,8 @@ namespace SDP_T01_Group06
 			addHeader();
 			addFooter();
 			createBody();
+			addCodeSnippet();
+			addBudgetBreakdown();
 		}
 
 		public void addHeader()
@@ -25,5 +27,9 @@ namespace SDP_T01_Group06
 		}
 
 		public abstract void createBody();
+
+		public virtual void addCodeSnippet() { }
+
+		public virtual void addBudgetBreakdown() { }
 	}
 }

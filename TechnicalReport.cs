@@ -12,5 +12,10 @@ namespace SDP_T01_Group06
 		{
 			Console.WriteLine("Created Technical Report body");
 		}
+
+		public override void addCodeSnippet()
+		{
+			Console.WriteLine("Adding code snippet...");    
+		}
 	}
 }
