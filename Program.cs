@@ -10,9 +10,10 @@ namespace SDP_T01_Group06
             User owner = new User("Alice");
             Document techReport = new TechnicalReport(owner);
             Document grantProposal = new GrantProposal(owner);
+            techReport.assembleDocument();
 
             techReport.edit(); // Calls DraftState.edit(), then techReport.editContent()
-            grantProposal.edit(); // Calls DraftState.edit(), then grantProposal.editContent()
+            //grantProposal.edit(); // Calls DraftState.edit(), then grantProposal.editContent()
             //AnsiConsole.Write(
             //   new FigletText("Document Workflow System")
             //       .LeftJustified()

@@ -10,12 +10,12 @@
 
         public override void editDocument()
         {
-            selectSection();
+            selectSection(rootsection, 1);
             Console.WriteLine("What would you like to do?: ");
 			Console.WriteLine("1. Add paragraph");
             Console.WriteLine("2. Add code snippet");
             Console.WriteLine("0. Exit");
-            Console.WriteLine("Your option: ");
+            Console.Write("Your option: ");
             string option = Console.ReadLine();
             switch (option)
             {
