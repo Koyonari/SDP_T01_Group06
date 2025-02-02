@@ -2,13 +2,14 @@
 {
 	public abstract class Document
 	{
-		private DocumentState currentState;
-		private User owner;
-		private List<User> collaborators = new List<User>();
-        private User approver;
-		private bool previouslyrejected = false;
-		private bool isedited = false;
-		private string documentcontent;
+		protected DocumentState currentState;
+		protected User owner;
+		protected List<User> collaborators = new List<User>();
+		protected User approver;
+		protected bool previouslyrejected = false;
+		protected bool isedited = false;
+		protected string documentcontent;
+		protected string documentname;
 
 		public User Owner { get => owner; set => owner = value; }
         public List<User> Collaborators { get => collaborators; set => collaborators = value; }
@@ -89,28 +90,49 @@
 
         public void assembleDocument()
 		{
-			addHeader();
-			addFooter();
-			createBody();
-			addCodeSnippet();
-			addBudgetBreakdown();
+			getDocumentName(); // concrete operation
+			addHeader(); // concrete operation
+			createBody(); // primitive operation
+			addFooter(); // concrete operation
 		}
 
+		public void getDocumentName()
+		{
+			Console.Write("Please enter the name of the document: ");
+			string docname = Console.ReadLine();
+			while (docname == null)
+			{
+				Console.Write("Please enter the name of the document: ");
+				docname = Console.ReadLine();
+			}
+			documentname = docname;
+		}
 		public void addHeader()
 		{
 			Console.WriteLine("Header added to document");
+			documentcontent += owner.Name + " - " + documentname;
 		}
 		public void addFooter()
 		{
 			Console.WriteLine("Footer added to document");
+
+		}
+
+		public void addParagraph()
+		{
+			Console.Write("Enter text to put in paragraph: ");
+			string text = Console.ReadLine();
+			documentcontent += "\n" +text;
+			Console.WriteLine("Paragraph added to document");
 		}
 
 		public abstract void editDocument();
 
 		public abstract void createBody();
 
-		public virtual void addCodeSnippet() { }
 
-		public virtual void addBudgetBreakdown() { }
+		public virtual void addCodeSnippet() { } // hook
+
+		public virtual void addBudgetBreakdown() { } //hook
 	}
 }

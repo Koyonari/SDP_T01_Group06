@@ -11,14 +11,14 @@
         public override void editDocument()
         {
 			Console.WriteLine("What would you like to do?: ");
-			Console.WriteLine("1. Create body");
+			Console.WriteLine("1. Add paragraph");
             Console.WriteLine("2. Add code snippet");
 			Console.WriteLine("Your option: ");
             string option = Console.ReadLine();
             switch (option)
             {
                 case "1":
-                    createBody();
+                    addParagraph();
                     break;
                 case "2":
                     addCodeSnippet();
@@ -36,7 +36,9 @@
 
 		public override void addCodeSnippet()
 		{
-			Console.WriteLine("Adding code snippet...");    
+			Console.Write("Enter code to put in snippet: ");
+			string code = Console.ReadLine();
+			documentcontent += "\nCode Snippet\n" + code;
 		}
 	}
 }

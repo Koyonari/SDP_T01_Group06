@@ -8,14 +8,14 @@
         public override void editDocument()
         {
             Console.WriteLine("What would you like to do?: ");
-            Console.WriteLine("1. Create body");
-            Console.WriteLine("2. Add budeget breakdown");
+            Console.WriteLine("1. Add paragraph");
+            Console.WriteLine("2. Add budget breakdown");
             Console.WriteLine("Your option: ");
             string option = Console.ReadLine();
             switch (option)
             {
                 case "1":
-                    createBody();
+                    addParagraph();
                     break;
                 case "2":
                     addBudgetBreakdown();
