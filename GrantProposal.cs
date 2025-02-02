@@ -7,6 +7,7 @@
         }
         public override void editDocument()
         {
+            selectSection();
             Console.WriteLine("What would you like to do?: ");
             Console.WriteLine("1. Add paragraph");
             Console.WriteLine("2. Add budget breakdown");
@@ -20,6 +21,9 @@
                 case "2":
                     addBudgetBreakdown();
                     break;
+                case "0":
+                    return;
+                    break;
                 default:
                     Console.WriteLine("Invalid option.");
                     break;
@@ -31,9 +35,14 @@
 			Console.WriteLine("Created Grant Proposal body");
 		}
 
-		public override void addBudgetBreakdown()
-		{
-			Console.WriteLine("Adding budget breakdown table...");
-		}
-	}
+        public override void addBudgetBreakdown()
+        {
+            DocumentSection budgetSection = new DocumentSection("Budget Section");
+            Console.Write("Enter budget details: ");
+            string budget = Console.ReadLine();
+            budgetSection.add(new DocumentItem(budget, "Budget"));
+            DocumentComponent mainContent = rootsection.getChild(1); // get body section to insert
+            mainContent.add(budgetSection);
+        }
+    }
 }

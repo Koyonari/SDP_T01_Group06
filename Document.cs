@@ -10,6 +10,8 @@
 		protected bool isedited = false;
 		protected string documentcontent;
 		protected string documentname;
+		protected DocumentSection rootsection;
+		protected DocumentSection currentSection;
 
 		public User Owner { get => owner; set => owner = value; }
         public List<User> Collaborators { get => collaborators; set => collaborators = value; }
@@ -26,6 +28,7 @@
 			this.isedited = false;
 			this.previouslyrejected = false;
             this.collaborators = new List<User>();
+			this.rootsection = new DocumentSection("Document Root");
         }
 
 		public bool hasApprover()
@@ -109,30 +112,75 @@
 		}
 		public void addHeader()
 		{
+			DocumentSection header = new DocumentSection("Header", false); // header is not editable
+			header.add(new DocumentItem($"{owner.Name} - {documentname}", "Title", false));
+			rootsection.add(header);
 			Console.WriteLine("Header added to document");
-			documentcontent += owner.Name + " - " + documentname;
 		}
+
 		public void addFooter()
 		{
+			DocumentSection footer = new DocumentSection("Footer", false); // footer is not editable
+			footer.add(new DocumentItem($"Copyright {new DateTime().Year} - {owner.Name}", "Copyright", false));
+			rootsection.add(footer);
 			Console.WriteLine("Footer added to document");
-
 		}
 
 		public void addParagraph()
 		{
+			if (currentSection == null)
+			{
+				// default to body section
+				currentSection = (DocumentSection)rootsection.getChild(1);
+			}
+
 			Console.Write("Enter text to put in paragraph: ");
 			string text = Console.ReadLine();
-			documentcontent += "\n" +text;
-			Console.WriteLine("Paragraph added to document");
+			if (!string.IsNullOrEmpty(text))
+			{
+				currentSection.add(new DocumentItem(text, "Paragraph"));
+				Console.WriteLine("Paragraph added to document");
+				isedited = true;
+			}
+		}
+
+		public void selectSection()
+		{
+			Console.WriteLine("Available sections:");
+			DisplaySections(rootsection, 0);
+			Console.Write("Enter section number to edit: ");
+			if (int.TryParse(Console.ReadLine(), out int sectionIndex)) // if section number is correct, put it in sectionIndex variable
+			{
+				try
+				{
+					currentSection = (DocumentSection)rootsection.getChild(sectionIndex);
+					Console.WriteLine($"Selected section: {currentSection.SectionName}");
+				}
+				catch (Exception)
+				{
+					Console.WriteLine("Invalid section number.");
+				}
+			}
+		}
+
+		protected void DisplaySections(DocumentSection section, int level)
+		{
+			Console.WriteLine($"{new string(' ', level * 2)}{level}. {section.SectionName}");
+			foreach (var child in section.children)
+			{
+				if (child is DocumentSection childSection)
+				{
+					DisplaySections(childSection, level + 1);
+				}
+			}
 		}
 
 		public abstract void editDocument();
 
 		public abstract void createBody();
 
-
 		public virtual void addCodeSnippet() { } // hook
 
-		public virtual void addBudgetBreakdown() { } //hook
+		public virtual void addBudgetBreakdown() { } // hook
 	}
 }

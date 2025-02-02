@@ -10,10 +10,12 @@
 
         public override void editDocument()
         {
-			Console.WriteLine("What would you like to do?: ");
+            selectSection();
+            Console.WriteLine("What would you like to do?: ");
 			Console.WriteLine("1. Add paragraph");
             Console.WriteLine("2. Add code snippet");
-			Console.WriteLine("Your option: ");
+            Console.WriteLine("0. Exit");
+            Console.WriteLine("Your option: ");
             string option = Console.ReadLine();
             switch (option)
             {
@@ -23,6 +25,9 @@
                 case "2":
                     addCodeSnippet();
                     break;
+                case "0":
+                    return;
+                    break;
                 default:
                     Console.WriteLine("Invalid option.");
                     break;
@@ -30,15 +35,20 @@
         }
 
         public override void createBody()
-		{
-			Console.WriteLine("Created Technical Report body");
-		}
+        {
+            var mainSection = new DocumentSection("Main Content");
+            rootsection.add(mainSection);
+            mainSection.add(new DocumentItem("Technical Overview", "Heading"));
+        }
 
-		public override void addCodeSnippet()
-		{
-			Console.Write("Enter code to put in snippet: ");
-			string code = Console.ReadLine();
-			documentcontent += "\nCode Snippet\n" + code;
-		}
-	}
+        public override void addCodeSnippet()
+        {
+            var codeSection = new DocumentSection("Code Section");
+            Console.Write("Enter code snippet: ");
+            string code = Console.ReadLine();
+            codeSection.add(new DocumentItem(code, "Code"));
+            var mainContent = rootsection.getChild(1); // get body section to add component in
+            mainContent.add(codeSection);
+        }
+    }
 }
