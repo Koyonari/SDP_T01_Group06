@@ -6,13 +6,43 @@ namespace SDP_T01_Group06
     {
         static void Main(string[] args)
         {
-            User user = new User("John Doe");
-            User owner = new User("Alice");
-            Document techReport = new TechnicalReport(owner);
-            Document grantProposal = new GrantProposal(owner);
-            techReport.assembleDocument();
+            //User user = new User("John Doe");
+            //User owner = new User("Alice");
+            //Document techReport = new TechnicalReport(owner);
+            //Document grantProposal = new GrantProposal(owner);
+            //techReport.assembleDocument();
 
-            techReport.edit(); // Calls DraftState.edit(), then techReport.editContent()
+            //techReport.edit(); // Calls DraftState.edit(), then techReport.editContent()
+
+            GrantProposalFactory grantProposalFactory = new GrantProposalFactory();
+            TechnicalReportFactory tenicalReportFactory = new TechnicalReportFactory();
+
+            //Document newDoc = owner.CreateDocument(grantProposalFactory);
+
+            // Create users
+            User alice = new User("Alice");
+            User bob = new User("Bob");
+            User charlie = new User("Charlie");
+
+            // Create documents
+            Document doc1 = grantProposalFactory.CreateDocument(alice);
+            Document doc2 = grantProposalFactory.CreateDocument(bob);
+            Document doc3 = grantProposalFactory.CreateDocument(alice);
+
+            // Add collaborators
+            doc1.addCollaborator(bob);
+            doc2.addCollaborator(alice);
+            doc3.addCollaborator(charlie);
+
+            List<Document> allDocuments = new List<Document> { doc1, doc2, doc3 };
+
+            User user = alice;
+            // List Alice's associated and owned documents
+            user.ListRelatedDocuments(allDocuments);
+
+            user.ListOwnedDocuments(allDocuments);
+
+
             //grantProposal.edit(); // Calls DraftState.edit(), then grantProposal.editContent()
             //AnsiConsole.Write(
             //   new FigletText("Document Workflow System")

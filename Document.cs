@@ -17,10 +17,10 @@
         public List<User> Collaborators { get => collaborators; set => collaborators = value; }
         public User Approver { get => approver; set => approver = value; }
 		public string documentContent { get => documentcontent; set => documentcontent = value; }
-
+        public string Documentname { get => documentname; set => documentname = value; }
         public bool previouslyRejected { get => previouslyrejected; set => previouslyrejected = value; }
         public bool isEdited { get => isedited; set => isedited = value; }
-
+		
         public Document(User owner)
 		{
 			this.owner = owner;
@@ -234,5 +234,5 @@
 		public virtual void addCodeSnippet() { } // hook
 
 		public virtual void addBudgetBreakdown() { } // hook
-	}
+    }
 }
