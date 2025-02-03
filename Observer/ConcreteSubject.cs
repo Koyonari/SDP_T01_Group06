@@ -1,6 +1,8 @@
-﻿namespace SDP_T01_Group06
+﻿using SDP_T01_Group06.States;
+
+namespace SDP_T01_Group06.Observer
 {
-    public class ConcreteSubject: ISubject
+    public class ConcreteSubject : ISubject
     {
         private List<IObserver> _observers = new List<IObserver>();
         private DocumentState _state;

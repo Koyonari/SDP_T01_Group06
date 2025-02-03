@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SDP_T01_Group06
+namespace SDP_T01_Group06.Factory
 {
-    public interface DocumentIterator
+    public abstract class DocumentFactory
     {
-        bool HasNext();
-        Document Next();
+        public abstract Document CreateDocument(User user);
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SDP_T01_Group06
+namespace SDP_T01_Group06.Iterator
 {
-    public class AssociatedDocumentsIterator: DocumentIterator
+    public class AssociatedDocumentsIterator : DocumentIterator
     {
         private List<Document> documents;
         private User user;

@@ -1,4 +1,4 @@
-﻿namespace SDP_T01_Group06
+﻿namespace SDP_T01_Group06.Converter
 {
     public class WordConverter
     {

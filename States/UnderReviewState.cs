@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SDP_T01_Group06
+namespace SDP_T01_Group06.States
 {
     public class UnderReviewState : DocumentState
     {

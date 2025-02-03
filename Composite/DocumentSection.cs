@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SDP_T01_Group06
+namespace SDP_T01_Group06.Composite
 {
     public class DocumentSection : DocumentComponent
     {
@@ -15,7 +15,7 @@ namespace SDP_T01_Group06
         public string SectionName { get { return sectionName; } set { sectionName = value; } }
         public DocumentSection(string name, bool isEditable = true) // editable by default unless otherwise specified
         {
-            this.sectionName = name;
+            sectionName = name;
             this.isEditable = isEditable;
             children = new List<DocumentComponent>();
         }

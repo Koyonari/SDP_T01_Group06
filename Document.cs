@@ -1,6 +1,9 @@
-﻿namespace SDP_T01_Group06
+﻿using SDP_T01_Group06.Composite;
+using SDP_T01_Group06.States;
+
+namespace SDP_T01_Group06
 {
-	public abstract class Document
+    public abstract class Document
 	{
 		protected DocumentState currentState;
 		protected User owner;

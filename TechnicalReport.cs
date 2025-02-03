@@ -1,4 +1,6 @@
-﻿namespace SDP_T01_Group06
+﻿using SDP_T01_Group06.Composite;
+
+namespace SDP_T01_Group06
 {
 	public class TechnicalReport : Document
 	{

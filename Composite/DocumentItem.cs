@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SDP_T01_Group06
+namespace SDP_T01_Group06.Composite
 {
     public class DocumentItem : DocumentComponent // leaf in Composite pattern
     {
