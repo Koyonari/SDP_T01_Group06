@@ -30,7 +30,7 @@ namespace SDP_T01_Group06.States
             Console.WriteLine("Cannot nominate an approver in an rejected document.");
         }
 
-        public void submitForApproval()
+        public void submitForApproval(User submitter)
         {
             Console.WriteLine("Cannot submit an rejected document for approval.");
         }
@@ -54,6 +54,11 @@ namespace SDP_T01_Group06.States
         {
             Console.WriteLine("Resuming editing of the document.");
             document.setCurrentState(new DraftState(document));
+        }
+
+        public void undoSubmission(User undoer)
+        {
+            Console.WriteLine("Cannot undo submission of a rejected document.");
         }
     }
 }

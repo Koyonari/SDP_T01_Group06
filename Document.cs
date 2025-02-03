@@ -9,6 +9,7 @@ namespace SDP_T01_Group06
 		protected User owner;
 		protected List<User> collaborators = new List<User>();
 		protected User approver;
+		protected User submitter;
 		protected bool previouslyrejected = false;
 		protected bool isedited = false;
 		protected string documentcontent;
@@ -19,6 +20,7 @@ namespace SDP_T01_Group06
 		public User Owner { get => owner; set => owner = value; }
         public List<User> Collaborators { get => collaborators; set => collaborators = value; }
         public User Approver { get => approver; set => approver = value; }
+		public User Submitter { get => submitter; set => submitter = value; }
 		public string documentContent { get => documentcontent; set => documentcontent = value; }
         public string Documentname { get => documentname; set => documentname = value; }
         public bool previouslyRejected { get => previouslyrejected; set => previouslyrejected = value; }
@@ -59,9 +61,9 @@ namespace SDP_T01_Group06
 			currentState.nominateApprover(approver);
         }
 
-		public void submitForApproval()
+		public void submitForApproval(User submitter)
 		{
-			currentState.submitForApproval();
+			currentState.submitForApproval(submitter);
 		}
 
         public void pushBack(string comment)
@@ -78,6 +80,16 @@ namespace SDP_T01_Group06
 		{
 			currentState.reject();
         }
+
+		public void resumeEditing()
+		{
+			currentState.resumeEditing();
+		}
+
+		public void undoSubmission(User undoer)
+		{
+			currentState.undoSubmission(undoer);
+		}
 
         public void setCurrentState(DocumentState currentState)
         {

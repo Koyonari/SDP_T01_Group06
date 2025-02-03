@@ -30,7 +30,7 @@ namespace SDP_T01_Group06.States
             Console.WriteLine("Cannot nominate an approver for an approved document.");
         }
 
-        public void submitForApproval()
+        public void submitForApproval(User submitter)
         {
             Console.WriteLine("Cannot submit an approved document for approval.");
         }
@@ -53,6 +53,11 @@ namespace SDP_T01_Group06.States
         public void resumeEditing()
         {
             Console.WriteLine("Cannot resume an approved document.");
+        }
+
+        public void undoSubmission(User undoer)
+        {
+            Console.WriteLine("Cannot undo submission of an approved document.");
         }
     }
 }
