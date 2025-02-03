@@ -1,4 +1,5 @@
 ﻿using SDP_T01_Group06.Factory;
+using SDP_T01_Group06.Iterator;
 using Spectre.Console;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
@@ -258,9 +259,44 @@ namespace SDP_T01_Group06
 
         static void EditExistingDocument(User user, List<Document> docs)
         {
-            // Implement the logic to edit an existing document
-            AnsiConsole.MarkupLine("[green]Editing an existing document...[/]");
-        }
+			DocumentIterator assdociterator = new AssociatedDocumentsIterator(docs, user);
+			List<Document> availableDocs = new List<Document>();
+			int position = 1;
+
+			Console.WriteLine("Available documents:");
+
+			// First collect all associated documents
+			while (assdociterator.HasNext())
+			{
+				Document doc = assdociterator.Next();
+				availableDocs.Add(doc);
+				Console.WriteLine($"{position}. {doc.Documentname}");
+				position++;
+			}
+
+			if (availableDocs.Count == 0)
+			{
+				Console.WriteLine("No documents available for editing.");
+				return;
+			}
+
+			int choice;
+			bool isValid;
+			do
+			{
+				Console.Write("Enter the number of the document to edit: ");
+				isValid = int.TryParse(Console.ReadLine(), out choice);
+				isValid = isValid && choice >= 1 && choice <= availableDocs.Count;
+
+				if (!isValid)
+				{
+					Console.WriteLine($"Invalid input. Please enter a number between 1 and {availableDocs.Count}.");
+				}
+			} while (!isValid);
+
+			Document selectedDoc = availableDocs[choice - 1];
+            selectedDoc.edit();
+		}
 
         static void ViewOwnedDocuments(User user, List<Document> docs)
         {
