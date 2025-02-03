@@ -54,10 +54,11 @@ namespace SDP_T01_Group06.States
             Console.WriteLine("Approver nominated.");
         }
 
-        public void submitForApproval()
+        public void submitForApproval(User submitter)
         {
             Console.WriteLine("Document submitted for approval.");
             document.setCurrentState(new UnderReviewState(document));
+            document.Submitter = submitter;
         }
 
         public void pushBack(string comment)
@@ -78,6 +79,11 @@ namespace SDP_T01_Group06.States
         public void resumeEditing()
         {
             Console.WriteLine("Cannot resume editing for a draft document.");
+        }
+
+        public void undoSubmission(User undoer)
+        {
+            Console.WriteLine("Cannot undo submission for a draft document.");
         }
     }
 }

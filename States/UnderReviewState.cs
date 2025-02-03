@@ -31,7 +31,7 @@ namespace SDP_T01_Group06.States
             Console.WriteLine("Cannot nominate an approver while the document is under review.");
         }
 
-        public void submitForApproval()
+        public void submitForApproval(User submitter)
         {
             Console.WriteLine("Document is already under review and cannot be submitted again.");
         }
@@ -61,6 +61,12 @@ namespace SDP_T01_Group06.States
         public void resumeEditing()
         {
             Console.WriteLine("Cannot resume editing of a document that is under review.");
+        }
+
+        public void undoSubmission(User undoer)
+        {
+            Console.WriteLine($"Submission has been undone by {undoer.Name} for approval.");
+            document.setCurrentState(new DraftState(document));
         }
     }
 }
