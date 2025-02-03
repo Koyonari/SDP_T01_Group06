@@ -57,31 +57,26 @@ namespace SDP_T01_Group06
             allDocuments.Add(doc2);
             allDocuments.Add(doc3);
 
-            User currentUser;
+            
 
             Console.Clear();
-            //grantProposal.edit(); // Calls DraftState.edit(), then grantProposal.editContent()
+
             AnsiConsole.Write(
                new FigletText("Document Workflow System")
                    .LeftJustified()
                    .Color(Color.Blue));
             while (true)
             {
+                User currentUser = null;
                 var selectedOption = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Document Workflow System")
-                        .PageSize(6)
+                        .PageSize(4)
                         .AddChoices(
                             "Create new User",
                             "Login as a User",
                             "List All User",
                             "List All Documents"
-                            //"Create a new document",
-                            //"Edit existing document",
-                            //"View your documents",
-                            //"Submit existing document for approval",
-                            //"View existing document status",
-                            //"Manage document review"
                             ));
 
                 switch (selectedOption)
@@ -91,6 +86,7 @@ namespace SDP_T01_Group06
                         break;
                     case "Login as a User":
                         currentUser = LoginAsUser(allUsers);
+                        LoggedInMenu(currentUser, allDocuments);
                         break;
                     case "List All User":
                         ListAllUsers(allUsers);
@@ -98,29 +94,64 @@ namespace SDP_T01_Group06
                     case "List All Documents":
                         ListAllDocs(allDocuments);
                         break;
-                    case "Create a new document":
-                        CreateNewDocument();
-                        break;
-                    case "Edit existing document":
-                        EditExistingDocument();
-                        break;
-                    case "View your documents":
-                        ViewDocuments();
-                        break;
-                    case "Submit existing document for approval":
-                        SubmitDocumentForApproval();
-                        break;
-                    case "View existing document status":
-                        ViewDocumentStatus();
-                        break;
-                    case "Manage document review":
-                        ManageDocumentReview();
-                        break;
                 }
             }
 
         }
 
+        static void LoggedInMenu(User currentUser, List<Document> allDocuments)
+        {
+            Console.Clear();
+            AnsiConsole.Write(
+               new FigletText("Document Workflow System")
+                   .LeftJustified()
+                   .Color(Color.Blue));
+            while (true)
+            {
+                var selectedOption = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Document Workflow System")
+                        .PageSize(7)
+                        .AddChoices(
+                            "Create a new document",
+                            "Edit existing document",
+                            "View Owned documents",
+                            "View Associated documents",
+                            "Submit existing document for approval",
+                            "View existing document status",
+                            "Manage document review",
+                            "Log Out"
+                            ));
+
+                switch (selectedOption)
+                {
+                    case "Create a new document":
+                        CreateNewDocument(currentUser, allDocuments); 
+                        break;
+                    case "Edit existing document":                        
+                        EditExistingDocument(currentUser, allDocuments);                        
+                        break;
+                    case "View Owned documents":
+                        ViewOwnedDocuments(currentUser, allDocuments);
+                        break;
+                    case "View Associated documents":
+                        ViewAssociatedDocuments(currentUser, allDocuments);                        
+                        break;
+                    case "Submit existing document for approval":
+                        SubmitDocumentForApproval(currentUser, allDocuments);                        
+                        break;
+                    case "View existing document status":
+                        ViewDocumentStatus(currentUser, allDocuments);                        
+                        break;
+                    case "Manage document review":                   
+                        ManageDocumentReview(currentUser, allDocuments);                      
+                        break;
+                    case "Log Out":
+                        currentUser = null;
+                        return;
+                }
+            }
+        }
         static void CreateNewUser(List<User> users)
         {
             Console.Write("Enter new User's name: ");
@@ -144,7 +175,7 @@ namespace SDP_T01_Group06
             // Ensure name is not empty
             while (string.IsNullOrWhiteSpace(name))
             {
-                Console.WriteLine("Enter a Name.");
+                AnsiConsole.MarkupLine("[red]Enter a Name....[/]");
                 Console.Write("Enter a User's Name: ");
                 name = Console.ReadLine();
             }
@@ -154,13 +185,13 @@ namespace SDP_T01_Group06
             {
                 if (user.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine($"Logged in as {user.Name}.");
+                    AnsiConsole.MarkupLine($"[green]Logged in as {user.Name}[/]");
                     return user;
                 }
             }
 
             // If user is not found, ask again
-            Console.WriteLine("User not found. Try again.\n");
+            AnsiConsole.MarkupLine($"[red]User not found. Try again.[/]");
             return LoginAsUser(users); // Recursive call until a valid user is found
 
         }
@@ -169,8 +200,9 @@ namespace SDP_T01_Group06
         {
             foreach (var user in users)
             {
-                AnsiConsole.MarkupLine($"[red]{user}[/]");
-            }
+                AnsiConsole.MarkupLine($"[blue]{user}[/]");
+            }            
+            return;
         }
         static void ListAllDocs(List<Document> docs)
         {
@@ -178,37 +210,47 @@ namespace SDP_T01_Group06
                 AnsiConsole.MarkupLine($"[red]{doc.Documentname} - {doc.Owner.Name} [/]"); 
             }
         }
-        static void CreateNewDocument()
+        static void CreateNewDocument(User user, List<Document> docs)
         {
             // Implement the logic to create a new document
             AnsiConsole.MarkupLine("[green]Creating a new document...[/]");
         }
 
-        static void EditExistingDocument()
+        static void EditExistingDocument(User user, List<Document> docs)
         {
             // Implement the logic to edit an existing document
             AnsiConsole.MarkupLine("[green]Editing an existing document...[/]");
         }
 
-        static void ViewDocuments()
+        static void ViewOwnedDocuments(User user, List<Document> docs)
+        {
+            // Implement the logic to view the user's documents
+            AnsiConsole.MarkupLine("[green]Viewing Owned documents...[/]");
+            user.ListOwnedDocuments(docs);
+            
+        }
+
+        static void ViewAssociatedDocuments(User user, List<Document> docs)
         {
             // Implement the logic to view the user's documents
             AnsiConsole.MarkupLine("[green]Viewing your documents...[/]");
+            user.ListRelatedDocuments(docs);
+            
         }
 
-        static void SubmitDocumentForApproval()
+        static void SubmitDocumentForApproval(User user, List<Document> docs)
         {
             // Implement the logic to submit a document for approval
             AnsiConsole.MarkupLine("[green]Submitting a document for approval...[/]");
         }
 
-        static void ViewDocumentStatus()
+        static void ViewDocumentStatus(User user, List<Document> docs)
         {
             // Implement the logic to view the status of a document
-            AnsiConsole.MarkupLine("[green]Viewing the status of a document...[/]");
+            AnsiConsole.MarkupLine("[green]Viewing the status of a document...[/]");            
         }
 
-        static void ManageDocumentReview()
+        static void ManageDocumentReview(User user, List<Document> docs)
         {
             // Implement the logic to manage the review of a document
             AnsiConsole.MarkupLine("[green]Managing the review of a document...[/]");
