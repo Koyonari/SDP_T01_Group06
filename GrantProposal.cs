@@ -34,7 +34,9 @@ namespace SDP_T01_Group06
 
         public override void createBody()
 		{
-			Console.WriteLine("Created Grant Proposal body");
+			var mainSection = new DocumentSection("Main Content");
+			rootsection.add(mainSection);
+			mainSection.add(new DocumentItem("Proposal Overview", "Heading"));
 		}
 
         public override void addBudgetBreakdown()
