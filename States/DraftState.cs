@@ -74,5 +74,10 @@ namespace SDP_T01_Group06.States
         {
             Console.WriteLine("Cannot reject a document that is not under review.");
         }
+
+        public void resumeEditing()
+        {
+            Console.WriteLine("Cannot resume editing for a draft document.");
+        }
     }
 }

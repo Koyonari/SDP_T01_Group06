@@ -15,5 +15,6 @@ namespace SDP_T01_Group06.States
         public void pushBack(string comment);
         public void approve();
         public void reject();
+        public void resumeEditing();
     }
 }
