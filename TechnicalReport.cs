@@ -41,6 +41,7 @@ namespace SDP_T01_Group06
             var mainSection = new DocumentSection("Main Content");
             rootsection.add(mainSection);
             mainSection.add(new DocumentItem("Technical Overview", "Heading"));
+            Console.WriteLine("Technical Report body added to document");
         }
 
         public override void addCodeSnippet()

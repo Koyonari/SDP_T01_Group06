@@ -37,6 +37,7 @@ namespace SDP_T01_Group06
 			var mainSection = new DocumentSection("Main Content");
 			rootsection.add(mainSection);
 			mainSection.add(new DocumentItem("Proposal Overview", "Heading"));
+			Console.WriteLine("Grant Proposal body added to document");
 		}
 
         public override void addBudgetBreakdown()

@@ -1,6 +1,7 @@
 ﻿using SDP_T01_Group06.Factory;
 using Spectre.Console;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 
 namespace SDP_T01_Group06
 {
@@ -212,9 +213,48 @@ namespace SDP_T01_Group06
         }
         static void CreateNewDocument(User user, List<Document> docs)
         {
-            // Implement the logic to create a new document
-            AnsiConsole.MarkupLine("[green]Creating a new document...[/]");
-        }
+            Console.WriteLine("Document Types");
+            Console.WriteLine("1. Grant Proposal");
+            Console.WriteLine("2. Technical Report");
+			int doctype = 0;
+			bool isValidInput = false;
+
+			while (!isValidInput)
+			{
+				Console.Write("Enter document type: ");
+				string input = Console.ReadLine();
+
+				// check for valid int
+				if (int.TryParse(input, out doctype))
+				{
+					// if the integer is either 1 or 2, valid
+					if (doctype == 1 || doctype == 2)
+					{
+						isValidInput = true;
+					}
+					else
+					{
+						Console.WriteLine("Please enter either 1 or 2.");
+					}
+				}
+				else
+				{
+					Console.WriteLine("Invalid input. Please enter a valid number.");
+				}
+			}
+			Document doc1;
+            if (doctype == 1)
+            {
+				GrantProposalFactory grantProposalFactory = new GrantProposalFactory();
+				doc1 = grantProposalFactory.CreateDocument(user);
+			}
+			else
+			{
+				TechnicalReportFactory tenicalReportFactory = new TechnicalReportFactory();
+                doc1 = tenicalReportFactory.CreateDocument(user);
+			}
+
+		}
 
         static void EditExistingDocument(User user, List<Document> docs)
         {

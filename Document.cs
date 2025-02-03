@@ -138,7 +138,7 @@ namespace SDP_T01_Group06
 			DocumentSection footer = new DocumentSection("Footer", false); // footer is not editable
 			footer.add(new DocumentItem($"Copyright {new DateTime().Year} - {owner.Name}", "Copyright", false));
 			rootsection.add(footer);
-			Console.WriteLine("Footer added to document");
+			Console.WriteLine("Footer added to document\n");
 		}
 
 		public void addParagraph()
