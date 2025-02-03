@@ -57,5 +57,10 @@ namespace SDP_T01_Group06.States
             document.previouslyRejected = true;
             document.isEdited = false;
         }
+
+        public void resumeEditing()
+        {
+            Console.WriteLine("Cannot resume editing of a document that is under review.");
+        }
     }
 }
