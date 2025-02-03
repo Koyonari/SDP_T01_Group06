@@ -118,7 +118,7 @@ namespace SDP_T01_Group06
 		{
 			Console.Write("Please enter the name of the document: ");
 			string docname = Console.ReadLine();
-			while (docname == null)
+			while (docname == "")
 			{
 				Console.Write("Please enter the name of the document: ");
 				docname = Console.ReadLine();
@@ -130,7 +130,7 @@ namespace SDP_T01_Group06
 			DocumentSection header = new DocumentSection("Header", false); // header is not editable
 			header.add(new DocumentItem($"{owner.Name} - {documentname}", "Title", false));
 			rootsection.add(header);
-			Console.WriteLine("Header added to document");
+			Console.WriteLine("\nHeader added to document");
 		}
 
 		public void addFooter()
