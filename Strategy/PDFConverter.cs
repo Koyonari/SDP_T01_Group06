@@ -5,8 +5,8 @@
         public Document convert(Document document)
         {
             Document convertedDoc = document.clone();
-            Console.WriteLine($"Converting {document.Documentname} to PDF format...");
-            convertedDoc.Documentname = document.Documentname + ".pdf";
+            Console.WriteLine($"Converting {document.DocumentName} to PDF format...");
+            convertedDoc.DocumentName = document.DocumentName + ".pdf";
             return convertedDoc;
         }
     }

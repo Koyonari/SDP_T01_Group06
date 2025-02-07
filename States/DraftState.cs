@@ -26,6 +26,7 @@ namespace SDP_T01_Group06.States
             if (!document.Collaborators.Contains(collaborator) && collaborator != document.Approver && collaborator != document.Owner)
             {
                 document.Collaborators.Add(collaborator);
+                collaborator.AddDocument(document);
                 Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
             }
             else if (collaborator == document.Approver)

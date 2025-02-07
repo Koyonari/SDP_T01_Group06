@@ -12,9 +12,25 @@ namespace SDP_T01_Group06
     {
         public string Name { get; set; }
 
-        public User( string name)
+        private Guid userID;
+        public Guid UserID
         {
+            get { return userID; }
+            set { userID = value; }
+        }
+
+        private List<Document> documentList = new List<Document>();
+        public List<Document> DocumentList
+        {
+            get { return documentList; }
+            set { documentList = value; }
+        }
+
+        public User(string name)
+        {
+            this.userID = Guid.NewGuid();
             Name = name;
+            DocumentList = new List<Document>();
         }
 
         public override string ToString() {
@@ -24,28 +40,39 @@ namespace SDP_T01_Group06
         public Document CreateDocument(DocumentFactory factory)
         {
             Document newDoc = factory.CreateDocument(this);
+            documentList.Add(newDoc);
             return newDoc;
         }
 
-        public void ListRelatedDocuments(List<Document> allDocuments)
+        public int getNoOfDocuments()
         {
-            DocumentIterator iterator = new AssociatedDocumentsIterator(allDocuments, this);
+            return documentList.Count;
+        }
+
+        public void AddDocument(Document doc)
+        {
+            documentList.Add(doc);
+        }
+
+        public void ListRelatedDocuments()
+        {
+            DocumentIterator iterator = new AssociatedDocumentsIterator(this);
             Console.WriteLine($"\nDocuments associated with {Name}:");
             while (iterator.HasNext())
             {
                 Document doc = iterator.Next();
-                Console.WriteLine($"- {doc.Documentname}");
+                Console.WriteLine($"- {doc.DocumentName}");
             }
         }
 
-        public void ListOwnedDocuments(List<Document> allDocuments)
+        public void ListOwnedDocuments()
         {
-            DocumentIterator iterator = new OwnedDocumentsIterator(allDocuments, this);
+            DocumentIterator iterator = new OwnedDocumentsIterator(this);
             Console.WriteLine($"\nDocuments Owned by {Name}:");
             while (iterator.HasNext())
             {
                 Document doc = iterator.Next();
-                Console.WriteLine($"- {doc.Documentname}");
+                Console.WriteLine($"- {doc.DocumentName}");
             }
         }
     }
