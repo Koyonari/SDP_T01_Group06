@@ -49,6 +49,8 @@ namespace SDP_T01_Group06
             //doc2.addCollaborator(user2);
             //doc2.addCollaborator(user2);
             doc2.addCollaborator(user4);
+            doc2.nominateApprover(user1);
+            doc2.submitForApproval(user4);
 
             doc3.addCollaborator(user1);
             doc3.addCollaborator(user2);
@@ -122,7 +124,8 @@ namespace SDP_T01_Group06
                             "Nominate Approver for a document",
                             "Submit existing document for approval",
                             "View existing document status",
-                            "Manage document review",
+                            "View Documents Awaiting For Your Review",
+                            "Review & Approve Document",
                             "Convert document",
                             "Log Out"
                             ));
@@ -141,6 +144,9 @@ namespace SDP_T01_Group06
                     case "View Associated documents":
                         ViewAssociatedDocuments(currentUser);
                         break;
+                    case "View Documents Awaiting For Your Review & Approval":
+                        ViewDocumentsAwaitingForReview(currentUser);
+                        break;
                     case "Nominate Approver for a document":
                         NominateApproverForDocument(currentUser, allUsers);
                         break;
@@ -150,8 +156,8 @@ namespace SDP_T01_Group06
                     case "View existing document status":
                         ViewDocumentStatus(currentUser);
                         break;
-                    case "Manage document review":
-                        ManageDocumentReview(currentUser);
+                    case "Review & Approve Document":
+                        ReviewDocument(currentUser);
                         break;
                     case "Convert document":
                         ConvertDocument(currentUser, allDocuments);
@@ -268,13 +274,8 @@ namespace SDP_T01_Group06
 
         static void EditExistingDocument(User user)
         {
-            int position = 1;
             Console.WriteLine("Available documents:");
-            for (int i = 0; i < user.DocumentList.Count; i++)
-            {
-                Console.WriteLine($"{position}. {user.DocumentList[i].DocumentName}");
-                position++;
-            }
+            user.ListRelatedDocuments();
 
             if (user.DocumentList.Count == 0)
             {
@@ -288,15 +289,15 @@ namespace SDP_T01_Group06
             {
                 Console.Write("Enter the index of the document to edit: ");
                 isValid = int.TryParse(Console.ReadLine(), out choice);
-                isValid = isValid && choice >= 1 && choice <= user.DocumentList.Count;
+                isValid = isValid && choice >= 1 && choice <= user.getNoOfRelatedDocuments();
 
                 if (!isValid)
                 {
-                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {user.DocumentList.Count}.");
+                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {user.getNoOfRelatedDocuments()}.");
                 }
             } while (!isValid);
 
-            Document selectedDoc = user.DocumentList[choice - 1];
+            Document selectedDoc = user.getRelatedDocument(choice-1);
             selectedDoc.edit();
         }
 
@@ -315,17 +316,19 @@ namespace SDP_T01_Group06
             user.ListRelatedDocuments();
         }
 
+        static void ViewDocumentsAwaitingForReview(User user)
+        {
+            // Implement the logic to view documents awaiting review
+            AnsiConsole.MarkupLine("[green]Viewing documents awaiting review...[/]");
+            user.ListPendingDocsForReview();
+        }
+
         static void NominateApproverForDocument(User user, List<User> allUsers)
         {
             AnsiConsole.MarkupLine("[green]Nominate An Approver For a Document...[/]");
 
-            int position = 1;
             Console.WriteLine("Available documents:");
-            for (int i = 0; i < user.DocumentList.Count; i++)
-            {
-                Console.WriteLine($"{position}. {user.DocumentList[i].DocumentName}");
-                position++;
-            }
+            user.ListRelatedDocuments();
 
             if (user.DocumentList.Count == 0)
             {
@@ -339,18 +342,18 @@ namespace SDP_T01_Group06
             {
                 Console.Write("Enter the index of the document to edit: ");
                 isValid = int.TryParse(Console.ReadLine(), out choice);
-                isValid = isValid && choice >= 1 && choice <= user.DocumentList.Count;
+                isValid = isValid && choice >= 1 && choice <= user.getNoOfRelatedDocuments();
 
                 if (!isValid)
                 {
-                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {user.DocumentList.Count}.");
+                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {user.getNoOfRelatedDocuments()}.");
                 }
             } while (!isValid);
 
-            Document selectedDoc = user.DocumentList[choice - 1];
+            Document selectedDoc = user.getRelatedDocument(choice - 1);
 
             // Display Users
-            position = 1;
+            int position = 1;
             Console.WriteLine("Available approvers:");
             for (int i = 0; i < allUsers.Count; i++)
             {
@@ -382,18 +385,85 @@ namespace SDP_T01_Group06
         {
             // Implement the logic to submit a document for approval
             AnsiConsole.MarkupLine("[green]Submitting a document for approval...[/]");
+
+            Console.WriteLine("Available documents:");
+            user.ListRelatedDocuments();
+
+            int choice;
+            bool isValid;
+            do
+            {
+                Console.Write("Enter the index of the document to edit: ");
+                isValid = int.TryParse(Console.ReadLine(), out choice);
+                isValid = isValid && choice >= 1 && choice <= user.getNoOfRelatedDocuments();
+
+                if (!isValid)
+                {
+                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {user.getNoOfRelatedDocuments()}.");
+                }
+            } while (!isValid);
+
+            Document selectedDoc = user.getRelatedDocument(choice - 1);
+            selectedDoc.submitForApproval(user);
         }
 
         static void ViewDocumentStatus(User user)
         {
             // Implement the logic to view the status of a document
             AnsiConsole.MarkupLine("[green]Viewing the status of a document...[/]");
+            user.ListRelatedDocumentStatus();
         }
 
-        static void ManageDocumentReview(User user)
+        static void ReviewDocument(User user)
         {
-            // Implement the logic to manage the review of a document
+            // Display Header
             AnsiConsole.MarkupLine("[green]Managing the review of a document...[/]");
+
+            // Show Pending Documents
+            Console.WriteLine("\nDocuments To Review:");
+            user.ListPendingDocsForReview();
+
+            // Get the user’s choice of document
+            int choice;
+            do
+            {
+                choice = AnsiConsole.Ask<int>($"Enter the index of the document to edit (1-{user.getNoOfPendingDocuments()}): ");
+
+                if (choice < 1 || choice > user.getNoOfPendingDocuments())
+                {
+                    Console.WriteLine("Invalid selection. Please choose a valid index.");
+                }
+
+            } while (choice < 1 || choice > user.getNoOfPendingDocuments());
+
+            // Retrieve the selected document
+            Document selectedDoc = user.getPendingDocument(choice - 1);
+            Console.WriteLine($"\nSelected Document: {selectedDoc.DocumentName}");
+
+            // Ask for action (Approve, Pushback with Comment, Reject)
+            var action = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("What would you like to do with this document?")
+                    .AddChoices("Approve", "Pushback with Comment", "Reject"));
+
+            // Handle the selected action
+            switch (action)
+            {
+                case "Approve":
+                    selectedDoc.approve();
+                    break;
+
+                case "Pushback with Comment":
+                    string comment = AnsiConsole.Ask<string>("Enter your comment for pushback: ");
+                    selectedDoc.pushBack(comment);
+                    break;
+
+                case "Reject":
+                    selectedDoc.reject();
+                    break;
+            }
+
+            Console.WriteLine("\nReview process completed successfully.");
         }
 
         static void ConvertDocument(User user, List<Document> allDocuments)
@@ -434,7 +504,7 @@ namespace SDP_T01_Group06
             var docChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<int>()
                     .Title("Select a document to convert:")
-                    .AddChoices(Enumerable.Range(1, user.getNoOfDocuments()))
+                    .AddChoices(Enumerable.Range(1, user.getNoOfRelatedDocuments()))
                     .UseConverter(i => user.DocumentList[i - 1].DocumentName));
 
             // Select conversion format using AnsiConsole prompt

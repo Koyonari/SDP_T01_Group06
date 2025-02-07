@@ -64,6 +64,7 @@ namespace SDP_T01_Group06.States
             Console.WriteLine("Document approved.");
             document.setCurrentState(new ApprovedState(document));
             document.previouslyRejected = false;
+            document.Approver.removeDocument(document);
         }
 
         public void reject()
