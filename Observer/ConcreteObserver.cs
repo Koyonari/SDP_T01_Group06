@@ -4,19 +4,36 @@ namespace SDP_T01_Group06.Observer
 {
     public class ConcreteObserver : IObserver
     {
-        private ISubject _subject;
-        private DocumentState _state;
+        public string Name { get; private set; }
+        private List<ConcreteSubject> associatedDocuments;
 
-        public ConcreteObserver(ISubject subject)
+        public ConcreteObserver(string name)
         {
-            _subject = subject;
-            _subject.registerObserver(this);
+            Name = name;
+            associatedDocuments = new List<ConcreteSubject>();
         }
 
-        public void update(DocumentState state)
+        public void update(string documentName, DocumentState newState)
         {
-            _state = state;
-            Console.WriteLine($"Observer updated. Document state: {_state}");
+            Console.WriteLine($"Collaborator {Name} is notified that document {documentName} state changed to {newState.GetType().Name}.");
+        }
+
+        public void AddDocument(ConcreteSubject document)
+        {
+            if (!associatedDocuments.Contains(document))
+            {
+                associatedDocuments.Add(document);
+                document.registerObserver(this);
+            }
+        }
+
+        public void RemoveDocument(ConcreteSubject document)
+        {
+            if (associatedDocuments.Contains(document))
+            {
+                associatedDocuments.Remove(document);
+                document.removeObserver(this);
+            }
         }
     }
 }

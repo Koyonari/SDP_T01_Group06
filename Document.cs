@@ -45,20 +45,23 @@ namespace SDP_T01_Group06
 			this.previouslyrejected = false;
 			this.collaborators = new List<User>();
 			this.rootsection = new DocumentSection("Document Root");
-			this.documentSubject = new ConcreteSubject();
-		}
+            this.documentSubject = new ConcreteSubject(this.documentName, this.currentState);
+            ConcreteObserver ownerObserver = new ConcreteObserver(owner.Name);
+            ownerObserver.AddDocument(this.documentSubject);
+        }
 
 		public bool hasApprover()
 		{
 			return approver != null;
 		}
 
-		public void setState(DocumentState state)
-		{
-			this.setState(state);
-		}
+        public void setState(DocumentState state)
+        {
+            this.currentState = state;
+            this.documentSubject.setState(state);
+        }
 
-		public void edit()
+        public void edit()
 		{
 			currentState.edit();
 		}
@@ -66,7 +69,17 @@ namespace SDP_T01_Group06
 		public void addCollaborator(User collaborator)
 		{
 			currentState.addCollaborator(collaborator);
-		}
+
+			// Register observer
+            if (!collaborators.Contains(collaborator))
+            {
+                collaborators.Add(collaborator);
+
+                // Create and register observer for the collaborator
+                ConcreteObserver collaboratorObserver = new ConcreteObserver(collaborator.Name);
+                collaboratorObserver.AddDocument(this.documentSubject);
+            }
+        }
 
 		public void nominateApprover(User approver)
 		{
@@ -76,7 +89,8 @@ namespace SDP_T01_Group06
 		public void submitForApproval(User submitter)
 		{
 			currentState.submitForApproval(submitter);
-		}
+            this.submitter = submitter;
+        }
 
 		public void pushBack(string comment)
 		{
@@ -264,8 +278,6 @@ namespace SDP_T01_Group06
 			// Deep copy lists and complex objects
 			clonedDoc.collaborators = new List<User>(this.collaborators);
 			clonedDoc.rootsection = cloneSection(this.rootsection);
-			clonedDoc.documentSubject = new ConcreteSubject();
-
 			return clonedDoc;
 		}
 
