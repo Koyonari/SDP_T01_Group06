@@ -15,7 +15,7 @@ namespace SDP_T01_Group06.Observer
 
         public void update(string documentName, DocumentState newState)
         {
-            Console.WriteLine($"Collaborator {Name} is notified that document {documentName} state changed to {newState.GetType().Name}.");
+            Console.WriteLine($"{documentName} has been {newState.GetType().Name}.");
         }
 
         public void AddDocument(ConcreteSubject document)

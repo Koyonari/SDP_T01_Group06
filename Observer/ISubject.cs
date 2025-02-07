@@ -6,6 +6,6 @@ namespace SDP_T01_Group06.Observer
     {
         void registerObserver(IObserver observer);
         void removeObserver(IObserver observer);
-        void notifyObservers(string documentName, DocumentState newState);
+        void notifyObservers();
     }
 }

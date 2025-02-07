@@ -18,7 +18,7 @@ namespace SDP_T01_Group06.Observer
         public void setState(DocumentState newState)
         {
             CurrentState = newState;
-            notifyObservers(DocumentName, CurrentState);
+            notifyObservers();
         }
 
         public void registerObserver(IObserver observer)
@@ -37,11 +37,11 @@ namespace SDP_T01_Group06.Observer
             }
         }
 
-        public void notifyObservers(string documentName, DocumentState newState)
+        public void notifyObservers()
         {
             foreach (IObserver observer in observers)
             {
-                observer.update(documentName, newState);
+                observer.update(DocumentName, CurrentState);
             }
         }
     }
