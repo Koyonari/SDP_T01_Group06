@@ -12,9 +12,9 @@ namespace SDP_T01_Group06.Iterator
         private User user;
         private int index = 0;
 
-        public OwnedDocumentsIterator(List<Document> documents, User user)
+        public OwnedDocumentsIterator(User user)
         {
-            this.documents = documents;
+            this.documents = user.DocumentList;
             this.user = user;
         }
 

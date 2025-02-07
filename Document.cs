@@ -7,30 +7,39 @@ namespace SDP_T01_Group06
 	public abstract class Document
 	{
 		protected DocumentState currentState;
-		protected User owner;
+		protected Guid documentID;
+		protected string documentName;
+        protected User owner;
 		protected List<User> collaborators = new List<User>();
 		protected User approver;
 		protected User submitter;
 		protected bool previouslyrejected = false;
 		protected bool isedited = false;
-		protected string documentcontent;
-		protected string documentname;
 		protected DocumentSection rootsection;
 		protected DocumentSection currentSection;
 		protected ConcreteSubject documentSubject;
 
-		public User Owner { get => owner; set => owner = value; }
+        public Guid DocumentID
+        {
+            get { return documentID; }
+            set { documentID = value; }
+        }
+		public string DocumentName
+		{
+			get { return documentName; }
+            set { documentName = value; }
+        }
+        public User Owner { get => owner; set => owner = value; }
 		public List<User> Collaborators { get => collaborators; set => collaborators = value; }
 		public User Approver { get => approver; set => approver = value; }
 		public User Submitter { get => submitter; set => submitter = value; }
-		public string documentContent { get => documentcontent; set => documentcontent = value; }
-		public string Documentname { get => documentname; set => documentname = value; }
 		public bool previouslyRejected { get => previouslyrejected; set => previouslyrejected = value; }
 		public bool isEdited { get => isedited; set => isedited = value; }
 
 		public Document(User owner)
 		{
-			this.owner = owner;
+            this.documentID = Guid.NewGuid();
+            this.owner = owner;
 			this.currentState = new DraftState(this);
 			this.isedited = false;
 			this.previouslyrejected = false;
@@ -104,11 +113,6 @@ namespace SDP_T01_Group06
 			return this.currentState;
 		}
 
-		public void displayContent()
-		{
-			Console.WriteLine("Document Content: \n" + documentcontent);
-		}
-
 		public void assembleDocument()
 		{
 			getDocumentName(); // concrete operation
@@ -126,12 +130,12 @@ namespace SDP_T01_Group06
 				Console.Write("Please enter the name of the document: ");
 				docname = Console.ReadLine();
 			}
-			documentname = docname;
+			documentName = docname;
 		}
 		public void addHeader()
 		{
 			DocumentSection header = new DocumentSection("Header", false); // header is not editable
-			header.add(new DocumentItem($"{owner.Name} - {documentname}", "Title", false));
+			header.add(new DocumentItem($"{owner.Name} - {documentName}", "Title", false));
 			rootsection.add(header);
 			Console.WriteLine("\nHeader added to document");
 		}

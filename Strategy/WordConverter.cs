@@ -5,8 +5,8 @@
         public Document convert(Document document)
         {
             Document convertedDoc = document.clone();
-            Console.WriteLine($"Converting {document.Documentname} to Word format...");
-            convertedDoc.Documentname = document.Documentname + ".word";
+            Console.WriteLine($"Converting {document.DocumentName} to Word format...");
+            convertedDoc.DocumentName = document.DocumentName + ".word";
             return convertedDoc;
         }
     }
