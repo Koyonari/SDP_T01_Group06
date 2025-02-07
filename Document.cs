@@ -166,78 +166,83 @@ namespace SDP_T01_Group06
 			}
 		}
 
-		public void selectSection(DocumentSection section, int level)
-		{
-			// current section
-			Console.WriteLine($"\nYou are in section: {section.SectionName}");
+        public void selectSection(DocumentSection section, int level)
+        {
+            Console.WriteLine($"\nYou are in section: {section.SectionName}");
 
-			// if there are no more children, just select the current one
-			if (section.children.Count == 0)
-			{
-				currentSection = section;
-				Console.WriteLine("No sub-sections or items available. Selected current section: " + section.SectionName);
-				return;
-			}
+            if (section.children.Count == 0)
+            {
+                currentSection = section;
+                Console.WriteLine("No sub-sections or items available. Selected current section: " + section.SectionName);
+                return;
+            }
 
-			// or else display the current section children
-			Console.WriteLine("Available components:");
-			for (int i = 0; i < section.children.Count; i++)
-			{
-				DocumentComponent comp = section.children[i];
-				if (comp is DocumentSection ds)
-				{
-					Console.WriteLine($"{i + 1}. Section: {ds.SectionName}");
-				}
-				else if (comp is DocumentItem di)
-				{
-					Console.WriteLine($"{i + 1}. Item: {di.Content}");
-				}
-			}
+            Console.WriteLine("Available components:");
+            for (int i = 0; i < section.children.Count; i++)
+            {
+                DocumentComponent comp = section.children[i];
+                if (comp is DocumentSection ds)
+                {
+                    Console.WriteLine($"{i + 1}. Section: {ds.SectionName}");
+                }
+                else if (comp is DocumentItem di)
+                {
+                    Console.WriteLine($"{i + 1}. Item: {di.Content}");
+                }
+            }
 
-			Console.Write("Enter the number of the component to select (or 0 to select the current section): ");
-			string input = Console.ReadLine();
-			if (int.TryParse(input, out int choice))
-			{
-				// If 0 is entered, select the current section and stop drilling down.
-				if (choice == 0)
-				{
-					currentSection = section;
-					Console.WriteLine("Selected section: " + section.SectionName);
-					return;
-				}
+            while (true)
+            {
+                Console.Write($"Enter the number of the component to select (0 to confirm current section, 1-{section.children.Count} to navigate): ");
+                string input = Console.ReadLine()?.Trim();
 
-				// Validate selection is within range.
-				if (choice < 1 || choice > section.children.Count)
-				{
-					Console.WriteLine("Invalid selection. Please try again.");
-					return;
-				}
+                // Validate numeric input
+                if (!int.TryParse(input, out int choice))
+                {
+                    Console.WriteLine("Invalid input. Please enter a numeric value.");
+                    continue;
+                }
 
-				// Get the selected component (adjusting for zero-based indexing)
-				DocumentComponent selected = section.children[choice - 1];
+                // Handle current section selection
+                if (choice == 0)
+                {
+                    currentSection = section;
+                    Console.WriteLine($"Confirmed current section: {section.SectionName}");
+                    return;
+                }
 
-				// If the selected component is a section, call selectSection recursively.
-				if (selected is DocumentSection ds)
-				{
-					selectSection(ds, level + 1);
-				}
-				// If the selected component is a DocumentItem, print a message (or call an edit routine).
-				else if (selected is DocumentItem di)
-				{
-					Console.WriteLine("Selected a document item: " + di.Content);
-					// Optionally call an edit routine:
-					// EditDocumentItem(di);
-				}
-			}
-			else
-			{
-				Console.WriteLine("Invalid input. Please enter a valid number.");
-			}
-		}
+                // Validate choice range
+                if (choice < 1 || choice > section.children.Count)
+                {
+                    Console.WriteLine($"Invalid selection. Please enter a number between 0 and {section.children.Count}.");
+                    continue;
+                }
+
+                DocumentComponent selected = section.children[choice - 1];
+
+                // Handle section selection
+                if (selected is DocumentSection childSection)
+                {
+                    selectSection(childSection, level + 1);
+                    return;
+                }
+
+                // Handle item selection
+                if (selected is DocumentItem item)
+                {
+                    Console.WriteLine($"Selected item: {item.Content}");
+                    // Add item handling logic here if needed
+                    return;
+                }
+
+                Console.WriteLine("Selected component type is not supported."); // Fallback error
+                return;
+            }
+        }
 
 
 
-		protected void DisplaySections(DocumentSection section, int level)
+        protected void DisplaySections(DocumentSection section, int level)
 		{
 			Console.WriteLine($"{new string(' ', level * 2)}{level}. {section.SectionName}");
 			//foreach (DocumentComponent child in section.children)
