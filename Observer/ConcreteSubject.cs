@@ -4,34 +4,44 @@ namespace SDP_T01_Group06.Observer
 {
     public class ConcreteSubject : ISubject
     {
-        private List<IObserver> _observers = new List<IObserver>();
-        private DocumentState _state;
+        public string DocumentName { get; private set; }
+        public DocumentState CurrentState { get; private set; }
+        private List<IObserver> observers;
 
-        public DocumentState State
+        public ConcreteSubject(string documentName, DocumentState initialState)
         {
-            get { return _state; }
-            set
-            {
-                _state = value;
-                notifyObservers();
-            }
+            DocumentName = documentName;
+            CurrentState = initialState;
+            observers = new List<IObserver>();
+        }
+
+        public void setState(DocumentState newState)
+        {
+            CurrentState = newState;
+            notifyObservers(DocumentName, CurrentState);
         }
 
         public void registerObserver(IObserver observer)
         {
-            _observers.Add(observer);
+            if (!observers.Contains(observer))
+            {
+                observers.Add(observer);
+            }
         }
 
         public void removeObserver(IObserver observer)
         {
-            _observers.Remove(observer);
+            if (observers.Contains(observer))
+            {
+                observers.Remove(observer);
+            }
         }
 
-        public void notifyObservers()
+        public void notifyObservers(string documentName, DocumentState newState)
         {
-            foreach (var observer in _observers)
+            foreach (IObserver observer in observers)
             {
-                observer.update(_state);
+                observer.update(documentName, newState);
             }
         }
     }
