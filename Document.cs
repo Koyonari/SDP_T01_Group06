@@ -282,13 +282,5 @@ namespace SDP_T01_Group06
 			return newSection;
 		}
 
-		private void NotifyCollaborators(string message)
-		{
-			foreach (var collaborator in collaborators.Concat(new[] { owner }))
-			{
-				Console.WriteLine($"Notifying {collaborator.Name}: {message}");
-			}
-
-		}
 	}
 }
