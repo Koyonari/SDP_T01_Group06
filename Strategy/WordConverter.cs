@@ -1,10 +1,13 @@
 ﻿namespace SDP_T01_Group06.Converter
 {
-    public class WordConverter
+    public class WordConverter: IDocumentConverter
     {
-        public void convert()
+        public Document convert(Document document)
         {
-            Console.WriteLine("Converting document to Word format");
+            Document convertedDoc = document.clone();
+            Console.WriteLine($"Converting {document.Documentname} to Word format...");
+            convertedDoc.Documentname = document.Documentname + ".word";
+            return convertedDoc;
         }
     }
 }

@@ -1,10 +1,13 @@
 ﻿namespace SDP_T01_Group06.Converter
 {
-    public class PDFConverter
+    public class PDFConverter : IDocumentConverter
     {
-        public void Convert()
+        public Document convert(Document document)
         {
-            Console.WriteLine("Converting document to PDF format");
+            Document convertedDoc = document.clone();
+            Console.WriteLine($"Converting {document.Documentname} to PDF format...");
+            convertedDoc.Documentname = document.Documentname + ".pdf";
+            return convertedDoc;
         }
     }
 }

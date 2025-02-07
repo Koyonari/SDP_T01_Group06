@@ -1,9 +1,10 @@
 ﻿using SDP_T01_Group06.Composite;
+using SDP_T01_Group06.Observer;
 using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06
 {
-    public abstract class Document
+	public abstract class Document
 	{
 		protected DocumentState currentState;
 		protected User owner;
@@ -16,40 +17,42 @@ namespace SDP_T01_Group06
 		protected string documentname;
 		protected DocumentSection rootsection;
 		protected DocumentSection currentSection;
+		protected ConcreteSubject documentSubject;
 
 		public User Owner { get => owner; set => owner = value; }
-        public List<User> Collaborators { get => collaborators; set => collaborators = value; }
-        public User Approver { get => approver; set => approver = value; }
+		public List<User> Collaborators { get => collaborators; set => collaborators = value; }
+		public User Approver { get => approver; set => approver = value; }
 		public User Submitter { get => submitter; set => submitter = value; }
 		public string documentContent { get => documentcontent; set => documentcontent = value; }
-        public string Documentname { get => documentname; set => documentname = value; }
-        public bool previouslyRejected { get => previouslyrejected; set => previouslyrejected = value; }
-        public bool isEdited { get => isedited; set => isedited = value; }
-		
-        public Document(User owner)
+		public string Documentname { get => documentname; set => documentname = value; }
+		public bool previouslyRejected { get => previouslyrejected; set => previouslyrejected = value; }
+		public bool isEdited { get => isedited; set => isedited = value; }
+
+		public Document(User owner)
 		{
 			this.owner = owner;
 			this.currentState = new DraftState(this);
 			this.isedited = false;
 			this.previouslyrejected = false;
-            this.collaborators = new List<User>();
+			this.collaborators = new List<User>();
 			this.rootsection = new DocumentSection("Document Root");
-        }
+			this.documentSubject = new ConcreteSubject();
+		}
 
 		public bool hasApprover()
 		{
 			return approver != null;
-        }
+		}
 
-        public void setState(DocumentState state)
+		public void setState(DocumentState state)
 		{
 			this.setState(state);
-        }
+		}
 
 		public void edit()
 		{
-            currentState.edit();
-        }
+			currentState.edit();
+		}
 
 		public void addCollaborator(User collaborator)
 		{
@@ -59,27 +62,27 @@ namespace SDP_T01_Group06
 		public void nominateApprover(User approver)
 		{
 			currentState.nominateApprover(approver);
-        }
+		}
 
 		public void submitForApproval(User submitter)
 		{
 			currentState.submitForApproval(submitter);
 		}
 
-        public void pushBack(string comment)
+		public void pushBack(string comment)
 		{
 			currentState.pushBack(comment);
-        }
+		}
 
 		public void approve()
 		{
 			currentState.approve();
-        }
+		}
 
 		public void reject()
 		{
 			currentState.reject();
-        }
+		}
 
 		public void resumeEditing()
 		{
@@ -91,22 +94,22 @@ namespace SDP_T01_Group06
 			currentState.undoSubmission(undoer);
 		}
 
-        public void setCurrentState(DocumentState currentState)
-        {
-            this.currentState = currentState;
-        }
+		public void setCurrentState(DocumentState currentState)
+		{
+			this.currentState = currentState;
+		}
 
-        public DocumentState getCurrentState()
-        {
-            return this.currentState;
-        }
+		public DocumentState getCurrentState()
+		{
+			return this.currentState;
+		}
 
 		public void displayContent()
 		{
 			Console.WriteLine("Document Content: \n" + documentcontent);
-        }
+		}
 
-        public void assembleDocument()
+		public void assembleDocument()
 		{
 			getDocumentName(); // concrete operation
 			addHeader(); // concrete operation
@@ -249,5 +252,43 @@ namespace SDP_T01_Group06
 		public virtual void addCodeSnippet() { } // hook
 
 		public virtual void addBudgetBreakdown() { } // hook
-    }
+
+		public Document clone()
+		{
+			Document clonedDoc = (Document)this.MemberwiseClone();
+
+			// Deep copy lists and complex objects
+			clonedDoc.collaborators = new List<User>(this.collaborators);
+			clonedDoc.rootsection = cloneSection(this.rootsection);
+			clonedDoc.documentSubject = new ConcreteSubject();
+
+			return clonedDoc;
+		}
+
+		private DocumentSection cloneSection(DocumentSection section)
+		{
+			DocumentSection newSection = new DocumentSection(section.SectionName, section.IsEditable);
+			foreach (var child in section.children)
+			{
+				if (child is DocumentSection childSection)
+				{
+					newSection.add(cloneSection(childSection));
+				}
+				else if (child is DocumentItem childItem)
+				{
+					newSection.add(new DocumentItem(childItem.Content, "Item", childItem.IsEditable));
+				}
+			}
+			return newSection;
+		}
+
+		private void NotifyCollaborators(string message)
+		{
+			foreach (var collaborator in collaborators.Concat(new[] { owner }))
+			{
+				Console.WriteLine($"Notifying {collaborator.Name}: {message}");
+			}
+
+		}
+	}
 }

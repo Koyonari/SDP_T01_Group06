@@ -1,8 +1,8 @@
-﻿using SDP_T01_Group06.Factory;
+﻿using SDP_T01_Group06.Converter;
+using SDP_T01_Group06.Factory;
 using SDP_T01_Group06.Iterator;
+using SDP_T01_Group06.Strategy;
 using Spectre.Console;
-using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
 
 namespace SDP_T01_Group06
 {
@@ -25,7 +25,7 @@ namespace SDP_T01_Group06
             allUsers.Add(user2);
             allUsers.Add(user3);
             allUsers.Add(user4);
-            
+
             // Store original console input before setting simulated input
             TextReader originalConsoleIn = Console.In;
 
@@ -59,7 +59,7 @@ namespace SDP_T01_Group06
             allDocuments.Add(doc2);
             allDocuments.Add(doc3);
 
-            
+
 
             Console.Clear();
 
@@ -122,31 +122,35 @@ namespace SDP_T01_Group06
                             "Submit existing document for approval",
                             "View existing document status",
                             "Manage document review",
+                            "Convert document",
                             "Log Out"
                             ));
 
                 switch (selectedOption)
                 {
                     case "Create a new document":
-                        CreateNewDocument(currentUser, allDocuments); 
+                        CreateNewDocument(currentUser, allDocuments);
                         break;
-                    case "Edit existing document":                        
-                        EditExistingDocument(currentUser, allDocuments);                        
+                    case "Edit existing document":
+                        EditExistingDocument(currentUser, allDocuments);
                         break;
                     case "View Owned documents":
                         ViewOwnedDocuments(currentUser, allDocuments);
                         break;
                     case "View Associated documents":
-                        ViewAssociatedDocuments(currentUser, allDocuments);                        
+                        ViewAssociatedDocuments(currentUser, allDocuments);
                         break;
                     case "Submit existing document for approval":
-                        SubmitDocumentForApproval(currentUser, allDocuments);                        
+                        SubmitDocumentForApproval(currentUser, allDocuments);
                         break;
                     case "View existing document status":
-                        ViewDocumentStatus(currentUser, allDocuments);                        
+                        ViewDocumentStatus(currentUser, allDocuments);
                         break;
-                    case "Manage document review":                   
-                        ManageDocumentReview(currentUser, allDocuments);                      
+                    case "Manage document review":
+                        ManageDocumentReview(currentUser, allDocuments);
+                        break;
+                    case "Convert document":
+                        ConvertDocument(currentUser, allDocuments);
                         break;
                     case "Log Out":
                         currentUser = null;
@@ -203,13 +207,14 @@ namespace SDP_T01_Group06
             foreach (var user in users)
             {
                 AnsiConsole.MarkupLine($"[blue]{user}[/]");
-            }            
+            }
             return;
         }
         static void ListAllDocs(List<Document> docs)
         {
-            foreach (var doc in docs){
-                AnsiConsole.MarkupLine($"[red]{doc.Documentname} - {doc.Owner.Name} [/]"); 
+            foreach (var doc in docs)
+            {
+                AnsiConsole.MarkupLine($"[red]{doc.Documentname} - {doc.Owner.Name} [/]");
             }
         }
         static void CreateNewDocument(User user, List<Document> docs)
@@ -217,93 +222,93 @@ namespace SDP_T01_Group06
             Console.WriteLine("Document Types");
             Console.WriteLine("1. Grant Proposal");
             Console.WriteLine("2. Technical Report");
-			int doctype = 0;
-			bool isValidInput = false;
+            int doctype = 0;
+            bool isValidInput = false;
 
-			while (!isValidInput)
-			{
-				Console.Write("Enter document type: ");
-				string input = Console.ReadLine();
+            while (!isValidInput)
+            {
+                Console.Write("Enter document type: ");
+                string input = Console.ReadLine();
 
-				// check for valid int
-				if (int.TryParse(input, out doctype))
-				{
-					// if the integer is either 1 or 2, valid
-					if (doctype == 1 || doctype == 2)
-					{
-						isValidInput = true;
-					}
-					else
-					{
-						Console.WriteLine("Please enter either 1 or 2.");
-					}
-				}
-				else
-				{
-					Console.WriteLine("Invalid input. Please enter a valid number.");
-				}
-			}
-			Document doc1;
+                // check for valid int
+                if (int.TryParse(input, out doctype))
+                {
+                    // if the integer is either 1 or 2, valid
+                    if (doctype == 1 || doctype == 2)
+                    {
+                        isValidInput = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter either 1 or 2.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid number.");
+                }
+            }
+            Document doc1;
             if (doctype == 1)
             {
-				GrantProposalFactory grantProposalFactory = new GrantProposalFactory();
-				doc1 = grantProposalFactory.CreateDocument(user);
-			}
-			else
-			{
-				TechnicalReportFactory tenicalReportFactory = new TechnicalReportFactory();
+                GrantProposalFactory grantProposalFactory = new GrantProposalFactory();
+                doc1 = grantProposalFactory.CreateDocument(user);
+            }
+            else
+            {
+                TechnicalReportFactory tenicalReportFactory = new TechnicalReportFactory();
                 doc1 = tenicalReportFactory.CreateDocument(user);
-			}
+            }
 
-		}
+        }
 
         static void EditExistingDocument(User user, List<Document> docs)
         {
-			DocumentIterator assdociterator = new AssociatedDocumentsIterator(docs, user);
-			List<Document> availableDocs = new List<Document>();
-			int position = 1;
+            DocumentIterator assdociterator = new AssociatedDocumentsIterator(docs, user);
+            List<Document> availableDocs = new List<Document>();
+            int position = 1;
 
-			Console.WriteLine("Available documents:");
+            Console.WriteLine("Available documents:");
 
-			// First collect all associated documents
-			while (assdociterator.HasNext())
-			{
-				Document doc = assdociterator.Next();
-				availableDocs.Add(doc);
-				Console.WriteLine($"{position}. {doc.Documentname}");
-				position++;
-			}
+            // First collect all associated documents
+            while (assdociterator.HasNext())
+            {
+                Document doc = assdociterator.Next();
+                availableDocs.Add(doc);
+                Console.WriteLine($"{position}. {doc.Documentname}");
+                position++;
+            }
 
-			if (availableDocs.Count == 0)
-			{
-				Console.WriteLine("No documents available for editing.");
-				return;
-			}
+            if (availableDocs.Count == 0)
+            {
+                Console.WriteLine("No documents available for editing.");
+                return;
+            }
 
-			int choice;
-			bool isValid;
-			do
-			{
-				Console.Write("Enter the number of the document to edit: ");
-				isValid = int.TryParse(Console.ReadLine(), out choice);
-				isValid = isValid && choice >= 1 && choice <= availableDocs.Count;
+            int choice;
+            bool isValid;
+            do
+            {
+                Console.Write("Enter the number of the document to edit: ");
+                isValid = int.TryParse(Console.ReadLine(), out choice);
+                isValid = isValid && choice >= 1 && choice <= availableDocs.Count;
 
-				if (!isValid)
-				{
-					Console.WriteLine($"Invalid input. Please enter a number between 1 and {availableDocs.Count}.");
-				}
-			} while (!isValid);
+                if (!isValid)
+                {
+                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {availableDocs.Count}.");
+                }
+            } while (!isValid);
 
-			Document selectedDoc = availableDocs[choice - 1];
+            Document selectedDoc = availableDocs[choice - 1];
             selectedDoc.edit();
-		}
+        }
 
         static void ViewOwnedDocuments(User user, List<Document> docs)
         {
             // Implement the logic to view the user's documents
             AnsiConsole.MarkupLine("[green]Viewing Owned documents...[/]");
             user.ListOwnedDocuments(docs);
-            
+
         }
 
         static void ViewAssociatedDocuments(User user, List<Document> docs)
@@ -311,7 +316,7 @@ namespace SDP_T01_Group06
             // Implement the logic to view the user's documents
             AnsiConsole.MarkupLine("[green]Viewing your documents...[/]");
             user.ListRelatedDocuments(docs);
-            
+
         }
 
         static void SubmitDocumentForApproval(User user, List<Document> docs)
@@ -323,13 +328,87 @@ namespace SDP_T01_Group06
         static void ViewDocumentStatus(User user, List<Document> docs)
         {
             // Implement the logic to view the status of a document
-            AnsiConsole.MarkupLine("[green]Viewing the status of a document...[/]");            
+            AnsiConsole.MarkupLine("[green]Viewing the status of a document...[/]");
         }
 
         static void ManageDocumentReview(User user, List<Document> docs)
         {
             // Implement the logic to manage the review of a document
             AnsiConsole.MarkupLine("[green]Managing the review of a document...[/]");
+        }
+
+        static void ConvertDocument(User user, List<Document> docs)
+        {
+            // Display available documents
+            DocumentIterator iterator = new AssociatedDocumentsIterator(docs, user);
+            List<Document> availableDocs = new List<Document>();
+
+            var table = new Table();
+            table.AddColumn("Number");
+            table.AddColumn("Document Name");
+
+            int position = 1;
+            while (iterator.HasNext())
+            {
+                Document doc = iterator.Next();
+                availableDocs.Add(doc);
+                table.AddRow(position.ToString(), doc.Documentname);
+                position++;
+            }
+
+            if (availableDocs.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No documents available for conversion.[/]");
+                return;
+            }
+
+            AnsiConsole.MarkupLine("\n[blue]Available documents for conversion:[/]");
+            AnsiConsole.Write(table);
+
+            // Select document using AnsiConsole prompt
+            var docChoice = AnsiConsole.Prompt(
+                new SelectionPrompt<int>()
+                    .Title("Select a document to convert:")
+                    .AddChoices(Enumerable.Range(1, availableDocs.Count))
+                    .UseConverter(i => availableDocs[i - 1].Documentname));
+
+            // Select conversion format using AnsiConsole prompt
+            var formatChoice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Select conversion format:")
+                    .AddChoices(new[] { "Word", "PDF" }));
+
+            var converter = new DocumentConverter();
+
+            // Set conversion strategy based on selection
+            switch (formatChoice)
+            {
+                case "Word":
+                    converter.SetStrategy(new WordConverter());
+                    break;
+                case "PDF":
+                    converter.SetStrategy(new PDFConverter());
+                    break;
+            }
+
+            try
+            {
+                // Show spinner during conversion
+                var convertedDoc = AnsiConsole.Status()
+                    .Start("Converting document...", ctx =>
+                    {
+                        ctx.Spinner(Spinner.Known.Dots);
+                        ctx.SpinnerStyle(Style.Parse("green"));
+                        return converter.convert(availableDocs[docChoice - 1]);
+                    });
+
+                docs.Add(convertedDoc);
+                AnsiConsole.MarkupLine($"\n[green]Document converted successfully:[/] {convertedDoc.Documentname}");
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"\n[red]Error converting document:[/] {ex.Message}");
+            }
         }
     }
 }
