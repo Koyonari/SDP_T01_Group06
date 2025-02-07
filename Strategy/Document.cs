@@ -1,6 +1,8 @@
-﻿namespace SDP_T01_Group06.Converter
+﻿using SDP_T01_Group06.Converter;
+
+namespace SDP_T01_Group06.Strategy
 {
-    public class DocumentContext
+    public class Document
     {
         private IDocumentConverter _converter;
 
