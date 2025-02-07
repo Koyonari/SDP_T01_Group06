@@ -17,7 +17,7 @@ namespace SDP_T01_Group06
 		protected bool isedited = false;
 		protected DocumentSection rootsection;
 		protected DocumentSection currentSection;
-		protected ConcreteSubject documentSubject;
+		protected DocumentObservable documentSubject;
 
         public Guid DocumentID
         {
@@ -45,8 +45,8 @@ namespace SDP_T01_Group06
 			this.previouslyrejected = false;
 			this.collaborators = new List<User>();
 			this.rootsection = new DocumentSection("Document Root");
-            this.documentSubject = new ConcreteSubject(this.documentName, this.currentState);
-            ConcreteObserver ownerObserver = new ConcreteObserver(owner.Name);
+            this.documentSubject = new DocumentObservable(this.documentName, this.currentState);
+            Listener ownerObserver = new Listener(owner.Name);
             ownerObserver.AddDocument(this.documentSubject);
         }
 
@@ -76,7 +76,7 @@ namespace SDP_T01_Group06
                 collaborators.Add(collaborator);
 
                 // Create and register observer for the collaborator
-                ConcreteObserver collaboratorObserver = new ConcreteObserver(collaborator.Name);
+                Listener collaboratorObserver = new Listener(collaborator.Name);
                 collaboratorObserver.AddDocument(this.documentSubject);
             }
         }

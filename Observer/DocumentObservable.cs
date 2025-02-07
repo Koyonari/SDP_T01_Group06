@@ -2,13 +2,13 @@
 
 namespace SDP_T01_Group06.Observer
 {
-    public class ConcreteSubject : ISubject
+    public class DocumentObservable : ISubject
     {
         public string DocumentName { get; private set; }
         public DocumentState CurrentState { get; private set; }
         private List<IObserver> observers;
 
-        public ConcreteSubject(string documentName, DocumentState initialState)
+        public DocumentObservable(string documentName, DocumentState initialState)
         {
             DocumentName = documentName;
             CurrentState = initialState;

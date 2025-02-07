@@ -2,15 +2,15 @@
 
 namespace SDP_T01_Group06.Observer
 {
-    public class ConcreteObserver : IObserver
+    public class Listener : IObserver
     {
         public string Name { get; private set; }
-        private List<ConcreteSubject> associatedDocuments;
+        private List<DocumentObservable> associatedDocuments;
 
-        public ConcreteObserver(string name)
+        public Listener(string name)
         {
             Name = name;
-            associatedDocuments = new List<ConcreteSubject>();
+            associatedDocuments = new List<DocumentObservable>();
         }
 
         public void update(string documentName, DocumentState newState)
@@ -18,7 +18,7 @@ namespace SDP_T01_Group06.Observer
             Console.WriteLine($"{documentName} has been {newState.GetType().Name}.");
         }
 
-        public void AddDocument(ConcreteSubject document)
+        public void AddDocument(DocumentObservable document)
         {
             if (!associatedDocuments.Contains(document))
             {
@@ -27,7 +27,7 @@ namespace SDP_T01_Group06.Observer
             }
         }
 
-        public void RemoveDocument(ConcreteSubject document)
+        public void RemoveDocument(DocumentObservable document)
         {
             if (associatedDocuments.Contains(document))
             {
