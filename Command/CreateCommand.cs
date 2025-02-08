@@ -7,25 +7,28 @@ using SDP_T01_Group06.Factory;
 
 namespace SDP_T01_Group06.Command
 {
-    internal class CreateCommand : ICommand, IResultCommand
+    internal class CreateCommand : IResultCommand
     {
         private DocumentFactory documentFactory;
         private User user;
         private Document newDocument;
-        public CreateCommand(DocumentFactory documentFactory, User user)
+        private List<Document> documents;
+
+        public CreateCommand(DocumentFactory documentFactory, User user, List<Document> documents)
         {
             this.documentFactory = documentFactory;
             this.user = user;
+            this.documents = documents;
         }
         public void execute()
         {
-            // Create the document
             newDocument = user.CreateDocument(documentFactory);
         }
         public void undo()
         {
-            // Delete the document
-            
+            // Delete the document  
+            documents.Remove(newDocument);
+            user.DocumentList.Remove(newDocument);
         }
         public Document getResult()
         {

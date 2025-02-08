@@ -15,7 +15,7 @@ namespace SDP_T01_Group06.Command
 
         public DocumentInvoker()
         {
-            this.hotkeys = new ICommand[3];
+            this.hotkeys = new ICommand[4];
         }
 
         // Sets the current command
@@ -48,8 +48,10 @@ namespace SDP_T01_Group06.Command
         // Undo the last command
         public void undoCommand()
         {
+            Console.WriteLine("Undo method called");
             if (commandHistory.Count > 0)
             {
+                Console.WriteLine("Has Command");
                 ICommand commandToUndo = commandHistory.Pop();
                 commandToUndo.undo();
                 //redoStack.Push(commandToUndo);

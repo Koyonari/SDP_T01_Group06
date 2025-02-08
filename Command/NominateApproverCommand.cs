@@ -12,6 +12,7 @@ namespace SDP_T01_Group06.Command
         private User user;
         public NominateApproverCommand(Document document, User user)
         {
+            this.document = document;
             this.user = user;
         }
         public void execute()

@@ -8,7 +8,7 @@ using SDP_T01_Group06.Strategy;
 
 namespace SDP_T01_Group06.Command
 {
-    internal class ConvertToPDFCommand : ICommand, IResultCommand
+    internal class ConvertToPDFCommand : IResultCommand
     {
         private User user;
         private Document document;
@@ -25,25 +25,10 @@ namespace SDP_T01_Group06.Command
         public void execute()
         {
             documentConverter.SetStrategy(strategy);
-            // Call the conversion operation in Document.
-            //document.ConvertTo("PDF");
-
-
-            // Conversion logic: convert document content to PDF format
-            //document.convertTo("PDF");
-            // You might store the previous format if needed for undo
+            document = documentConverter.convert(document);
         }
 
-        public void undo()
-        {
-            // Undo conversion – implementation may vary.
-            //document.RevertConversion();
-
-
-            // Undo conversion: this might revert to a default or previous format
-            // Undo might be as simple as removing the generated PDF or setting the document format back
-            //document.revertConversion();
-        }
+        public void undo() { }
 
         public Document getResult()
         {

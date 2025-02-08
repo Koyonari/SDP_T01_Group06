@@ -111,10 +111,12 @@ namespace SDP_T01_Group06
             ViewCommand viewOwnedCommand = new ViewCommand(currentUser, "Owned");
             ViewCommand viewAssociatedCommand = new ViewCommand(currentUser, "Associated");
             ViewCommand viewPendingCommand = new ViewCommand(currentUser, "Pending");
+            ViewCommand viewStatusCommand = new ViewCommand(currentUser, "Status");
 
             documentInvoker.setHotkeys(viewOwnedCommand, 0);
             documentInvoker.setHotkeys(viewAssociatedCommand, 1);
             documentInvoker.setHotkeys(viewPendingCommand, 2);
+            documentInvoker.setHotkeys(viewStatusCommand, 3);
 
             // CreateCommand Done
             //EditCommand editCommand = new EditCommand(currentUser);
@@ -145,6 +147,7 @@ namespace SDP_T01_Group06
                             "View Documents Awaiting For Your Review",
                             "Review & Approve Document",
                             "Convert document",
+                            "Undo",
                             "Log Out"
                             ));
 
@@ -179,6 +182,9 @@ namespace SDP_T01_Group06
                         break;
                     case "Convert document":
                         ConvertDocument(currentUser, allDocuments, documentInvoker);
+                        break;
+                    case "Undo":
+                        documentInvoker.undoCommand();
                         break;
                     case "Log Out":
                         currentUser = null;
@@ -296,7 +302,7 @@ namespace SDP_T01_Group06
 
             }
             // Create and execute the command using the chosen factory.
-            CreateCommand createCommand = new CreateCommand(factory, user);
+            CreateCommand createCommand = new CreateCommand(factory, user, allDocuments);
             documentInvoker.setCommand(createCommand);
             documentInvoker.executeCommand();
 
@@ -460,7 +466,7 @@ namespace SDP_T01_Group06
         {
             // Implement the logic to view the status of a document
             AnsiConsole.MarkupLine("[green]Viewing the status of a document...[/]");
-            documentInvoker.executeHotKey(1);
+            documentInvoker.executeHotKey(3);
             //user.ListRelatedDocumentStatus();
         }
 

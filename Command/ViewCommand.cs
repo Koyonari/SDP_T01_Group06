@@ -30,7 +30,10 @@ namespace SDP_T01_Group06.Command
             {
                 user.ListPendingDocsForReview();
             }
-
+            else if (documentType == "Status")
+            {
+                user.ListRelatedDocumentStatus();
+            }
         }
         public void undo()
         {

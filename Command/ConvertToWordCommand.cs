@@ -8,7 +8,7 @@ using SDP_T01_Group06.Strategy;
 
 namespace SDP_T01_Group06.Command
 {
-    public class ConvertToWordCommand : ICommand, IResultCommand
+    public class ConvertToWordCommand : IResultCommand
     {
         private User user;
         private Document document;
@@ -26,14 +26,9 @@ namespace SDP_T01_Group06.Command
         {
             documentConverter.SetStrategy(strategy);
             document = documentConverter.convert(document);
-            //document.ConvertTo("Word");
         }
 
-        public void undo()
-        {
-            //document.RevertConversion();
-        }
-
+        public void undo() { }
         public Document getResult()
         {
             return document;
