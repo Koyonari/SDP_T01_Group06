@@ -375,7 +375,7 @@ namespace SDP_T01_Group06
             } while (!isValid);
 
             User selectedUser = allUsers[choice - 1];
-            selectedDoc.addCollaborator(selectedUser);
+            selectedDoc.nominateApprover(selectedUser);
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
