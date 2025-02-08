@@ -47,7 +47,7 @@ namespace SDP_T01_Group06
 			Console.WriteLine("Grant Proposal body added to document");
 		}
 
-        public override void addBudgetBreakdown()
+        public void addBudgetBreakdown()
         {
             DocumentSection budgetSection = new DocumentSection("Budget Section");
             Console.Write("Enter budget details: ");
