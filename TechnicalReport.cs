@@ -12,27 +12,34 @@ namespace SDP_T01_Group06
 
         public override void editDocument()
         {
-            selectSection(rootsection, 1);
-            Console.WriteLine("What would you like to do?: ");
-			Console.WriteLine("1. Add paragraph");
-            Console.WriteLine("2. Add code snippet");
-            Console.WriteLine("0. Exit");
-            Console.Write("Your option: ");
-            string option = Console.ReadLine();
-            switch (option)
+            bool validOption = false;
+
+            while (!validOption)
             {
-                case "1":
-                    addParagraph();
-                    break;
-                case "2":
-                    addCodeSnippet();
-                    break;
-                case "0":
-                    return;
-                    break;
-                default:
-                    Console.WriteLine("Invalid option.");
-                    break;
+                selectSection(rootsection, 1);
+                Console.WriteLine("What would you like to do?: ");
+                Console.WriteLine("1. Add paragraph");
+                Console.WriteLine("2. Add code snippet");
+                Console.WriteLine("0. Exit");
+                Console.Write("Your option: ");
+                string option = Console.ReadLine();
+
+                switch (option)
+                {
+                    case "1":
+                        addParagraph();
+                        validOption = true;
+                        break;
+                    case "2":
+                        addCodeSnippet();
+                        validOption = true;
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Invalid option.");
+                        break;
+                }
             }
         }
 
@@ -44,7 +51,7 @@ namespace SDP_T01_Group06
             Console.WriteLine("Technical Report body added to document");
         }
 
-        public override void addCodeSnippet()
+        public void addCodeSnippet()
         {
             var codeSection = new DocumentSection("Code Section");
             Console.Write("Enter code snippet: ");

@@ -2,6 +2,6 @@
 {
     public interface IDocumentConverter
     {
-        void convert();
+        public Document convert(Document document);
     }
 }

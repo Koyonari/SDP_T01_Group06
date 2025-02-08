@@ -22,8 +22,24 @@ namespace SDP_T01_Group06.States
 
         public void addCollaborator(User collaborator)
         {
-            document.Collaborators.Add(collaborator);
-            Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
+            if (!document.Collaborators.Contains(collaborator) && collaborator != document.Approver && collaborator != document.Owner)
+            {
+                document.Collaborators.Add(collaborator);
+                collaborator.AddDocument(document);
+                Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
+            }
+            else if (collaborator == document.Approver)
+            {
+                Console.WriteLine($"{collaborator.Name} cannot be a collaborator and an approver.");
+            }
+            else if (collaborator == document.Owner)
+            {
+                Console.WriteLine($"{collaborator.Name} cannot be a collaborator and the owner.");
+            }
+            else
+            {
+                Console.WriteLine($"{collaborator.Name} is already a collaborator.");
+            }
         }
 
         public void nominateApprover(User approver)
@@ -48,6 +64,7 @@ namespace SDP_T01_Group06.States
             Console.WriteLine("Document approved.");
             document.setCurrentState(new ApprovedState(document));
             document.previouslyRejected = false;
+            document.Approver.removeDocument(document);
         }
 
         public void reject()

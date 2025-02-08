@@ -6,23 +6,24 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Iterator
 {
-    public class OwnedDocumentsIterator : DocumentIterator
+    public class PendingDocumentsIterator : DocumentIterator
     {
-        private List<Document> documents;
         private User user;
-        private int index = 0;
+        private List<Document> documents;
+        private int index;
 
-        public OwnedDocumentsIterator(User user)
+        public PendingDocumentsIterator(User user)
         {
-            this.documents = user.DocumentList;
             this.user = user;
+            this.documents = user.DocumentList;
+            index = 0;
         }
 
         public bool HasNext()
         {
             while (index < documents.Count)
             {
-                if (documents[index].Owner == user)
+                if (documents[index].Approver == user)
                     return true;
                 index++;
             }

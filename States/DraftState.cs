@@ -26,6 +26,7 @@ namespace SDP_T01_Group06.States
             if (!document.Collaborators.Contains(collaborator) && collaborator != document.Approver && collaborator != document.Owner)
             {
                 document.Collaborators.Add(collaborator);
+                collaborator.AddDocument(document);
                 Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
             }
             else if (collaborator == document.Approver)
@@ -50,15 +51,25 @@ namespace SDP_T01_Group06.States
                 return;
             }
 
+            document.Approver?.removeDocument(document);
+
             document.Approver = approver;
             Console.WriteLine("Approver nominated.");
         }
 
         public void submitForApproval(User submitter)
         {
-            Console.WriteLine("Document submitted for approval.");
-            document.setCurrentState(new UnderReviewState(document));
-            document.Submitter = submitter;
+            if (document.hasApprover())
+            {
+                Console.WriteLine("Document submitted for approval.");
+                document.setCurrentState(new UnderReviewState(document));
+                document.Approver.AddDocument(document);
+                document.Submitter = submitter;
+            }
+            else
+            {
+                Console.WriteLine("Document cannot be submitted without an approver.");
+            }
         }
 
         public void pushBack(string comment)

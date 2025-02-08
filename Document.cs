@@ -1,85 +1,111 @@
 ﻿using SDP_T01_Group06.Composite;
+using SDP_T01_Group06.Observer;
 using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06
 {
-    public abstract class Document
+	public abstract class Document
 	{
 		protected DocumentState currentState;
-		protected User owner;
+		protected Guid documentID;
+		protected string documentName;
+        protected User owner;
 		protected List<User> collaborators = new List<User>();
 		protected User approver;
 		protected User submitter;
 		protected bool previouslyrejected = false;
 		protected bool isedited = false;
-		protected string documentcontent;
-		protected string documentname;
 		protected DocumentSection rootsection;
 		protected DocumentSection currentSection;
+		protected DocumentObservable documentSubject;
 
-		public User Owner { get => owner; set => owner = value; }
-        public List<User> Collaborators { get => collaborators; set => collaborators = value; }
-        public User Approver { get => approver; set => approver = value; }
-		public User Submitter { get => submitter; set => submitter = value; }
-		public string documentContent { get => documentcontent; set => documentcontent = value; }
-        public string Documentname { get => documentname; set => documentname = value; }
-        public bool previouslyRejected { get => previouslyrejected; set => previouslyrejected = value; }
-        public bool isEdited { get => isedited; set => isedited = value; }
-		
-        public Document(User owner)
+        public Guid DocumentID
+        {
+            get { return documentID; }
+            set { documentID = value; }
+        }
+		public string DocumentName
 		{
-			this.owner = owner;
+			get { return documentName; }
+            set { documentName = value; }
+        }
+        public User Owner { get => owner; set => owner = value; }
+		public List<User> Collaborators { get => collaborators; set => collaborators = value; }
+		public User Approver { get => approver; set => approver = value; }
+		public User Submitter { get => submitter; set => submitter = value; }
+		public bool previouslyRejected { get => previouslyrejected; set => previouslyrejected = value; }
+		public bool isEdited { get => isedited; set => isedited = value; }
+
+		public Document(User owner)
+		{
+            this.documentID = Guid.NewGuid();
+            this.owner = owner;
 			this.currentState = new DraftState(this);
 			this.isedited = false;
 			this.previouslyrejected = false;
-            this.collaborators = new List<User>();
+			this.collaborators = new List<User>();
 			this.rootsection = new DocumentSection("Document Root");
+            this.documentSubject = new DocumentObservable(this.documentName, this.currentState);
+            Listener ownerObserver = new Listener(owner.Name);
+            ownerObserver.AddDocument(this.documentSubject);
         }
 
 		public bool hasApprover()
 		{
 			return approver != null;
-        }
+		}
 
         public void setState(DocumentState state)
-		{
-			this.setState(state);
+        {
+            this.currentState = state;
+            this.documentSubject.setState(state);
         }
 
-		public void edit()
+        public void edit()
 		{
-            currentState.edit();
-        }
+			currentState.edit();
+		}
 
 		public void addCollaborator(User collaborator)
 		{
 			currentState.addCollaborator(collaborator);
-		}
+
+			// Register observer
+            if (!collaborators.Contains(collaborator))
+            {
+                collaborators.Add(collaborator);
+
+                // Create and register observer for the collaborator
+                Listener collaboratorObserver = new Listener(collaborator.Name);
+                collaboratorObserver.AddDocument(this.documentSubject);
+            }
+        }
 
 		public void nominateApprover(User approver)
 		{
 			currentState.nominateApprover(approver);
-        }
+		}
 
 		public void submitForApproval(User submitter)
 		{
 			currentState.submitForApproval(submitter);
-		}
+            this.submitter = submitter;
+        }
 
-        public void pushBack(string comment)
+		public void pushBack(string comment)
 		{
 			currentState.pushBack(comment);
-        }
+		}
 
 		public void approve()
 		{
 			currentState.approve();
-        }
+		}
 
 		public void reject()
 		{
 			currentState.reject();
-        }
+		}
 
 		public void resumeEditing()
 		{
@@ -91,22 +117,17 @@ namespace SDP_T01_Group06
 			currentState.undoSubmission(undoer);
 		}
 
-        public void setCurrentState(DocumentState currentState)
-        {
-            this.currentState = currentState;
-        }
-
-        public DocumentState getCurrentState()
-        {
-            return this.currentState;
-        }
-
-		public void displayContent()
+		public void setCurrentState(DocumentState currentState)
 		{
-			Console.WriteLine("Document Content: \n" + documentcontent);
-        }
+			this.currentState = currentState;
+		}
 
-        public void assembleDocument()
+		public DocumentState getCurrentState()
+		{
+			return this.currentState;
+		}
+
+		public void assembleDocument()
 		{
 			getDocumentName(); // concrete operation
 			addHeader(); // concrete operation
@@ -123,12 +144,12 @@ namespace SDP_T01_Group06
 				Console.Write("Please enter the name of the document: ");
 				docname = Console.ReadLine();
 			}
-			documentname = docname;
+			documentName = docname;
 		}
 		public void addHeader()
 		{
 			DocumentSection header = new DocumentSection("Header", false); // header is not editable
-			header.add(new DocumentItem($"{owner.Name} - {documentname}", "Title", false));
+			header.add(new DocumentItem($"{owner.Name} - {documentName}", "Title", false));
 			rootsection.add(header);
 			Console.WriteLine("\nHeader added to document");
 		}
@@ -161,18 +182,15 @@ namespace SDP_T01_Group06
 
 		public void selectSection(DocumentSection section, int level)
 		{
-			// current section
 			Console.WriteLine($"\nYou are in section: {section.SectionName}");
 
-			// if there are no more children, just select the current one
 			if (section.children.Count == 0)
 			{
 				currentSection = section;
-				Console.WriteLine("No sub-sections or items available. Selected current section: " + section.SectionName);
+				Console.WriteLine("No sub-sections available. Selected current section: " + section.SectionName);
 				return;
 			}
 
-			// or else display the current section children
 			Console.WriteLine("Available components:");
 			for (int i = 0; i < section.children.Count; i++)
 			{
@@ -183,50 +201,58 @@ namespace SDP_T01_Group06
 				}
 				else if (comp is DocumentItem di)
 				{
-					Console.WriteLine($"{i + 1}. Item: {di.Content}");
+					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content} (Cannot be selected as a section)");
 				}
 			}
 
-			Console.Write("Enter the number of the component to select (or 0 to select the current section): ");
-			string input = Console.ReadLine();
-			if (int.TryParse(input, out int choice))
+			while (true)
 			{
-				// If 0 is entered, select the current section and stop drilling down.
+				Console.Write($"Enter the number of the component to select (0 to confirm current section, 1-{section.children.Count} to navigate): ");
+				string input = Console.ReadLine()?.Trim();
+
+				// Validate numeric input
+				if (!int.TryParse(input, out int choice))
+				{
+					Console.WriteLine("Invalid input. Please enter a numeric value.");
+					continue;
+				}
+
+				// Handle current section selection
 				if (choice == 0)
 				{
 					currentSection = section;
-					Console.WriteLine("Selected section: " + section.SectionName);
+					Console.WriteLine($"Confirmed current section: {section.SectionName}");
 					return;
 				}
 
-				// Validate selection is within range.
+				// Validate choice range
 				if (choice < 1 || choice > section.children.Count)
 				{
-					Console.WriteLine("Invalid selection. Please try again.");
+					Console.WriteLine($"Invalid selection. Please enter a number between 0 and {section.children.Count}.");
+					continue;
+				}
+
+				DocumentComponent selected = section.children[choice - 1];
+
+				// Prevent selecting a leaf node (DocumentItem)
+				if (selected is DocumentItem item)
+				{
+					Console.WriteLine($"Error: '{item.Content}' is an item and cannot be selected as a section.");
+					continue;
+				}
+
+				// Handle section selection (only DocumentSections can be navigated into)
+				if (selected is DocumentSection childSection)
+				{
+					selectSection(childSection, level + 1);
 					return;
 				}
 
-				// Get the selected component (adjusting for zero-based indexing)
-				DocumentComponent selected = section.children[choice - 1];
-
-				// If the selected component is a section, call selectSection recursively.
-				if (selected is DocumentSection ds)
-				{
-					selectSection(ds, level + 1);
-				}
-				// If the selected component is a DocumentItem, print a message (or call an edit routine).
-				else if (selected is DocumentItem di)
-				{
-					Console.WriteLine("Selected a document item: " + di.Content);
-					// Optionally call an edit routine:
-					// EditDocumentItem(di);
-				}
-			}
-			else
-			{
-				Console.WriteLine("Invalid input. Please enter a valid number.");
+				Console.WriteLine("Selected component type is not supported."); // Fallback error
+				return;
 			}
 		}
+
 
 
 
@@ -246,8 +272,32 @@ namespace SDP_T01_Group06
 
 		public abstract void createBody();
 
-		public virtual void addCodeSnippet() { } // hook
+		public Document clone()
+		{
+			Document clonedDoc = (Document)this.MemberwiseClone();
 
-		public virtual void addBudgetBreakdown() { } // hook
-    }
+			// Deep copy lists and complex objects
+			clonedDoc.collaborators = new List<User>(this.collaborators);
+			clonedDoc.rootsection = cloneSection(this.rootsection);
+			return clonedDoc;
+		}
+
+		private DocumentSection cloneSection(DocumentSection section)
+		{
+			DocumentSection newSection = new DocumentSection(section.SectionName, section.IsEditable);
+			foreach (var child in section.children)
+			{
+				if (child is DocumentSection childSection)
+				{
+					newSection.add(cloneSection(childSection));
+				}
+				else if (child is DocumentItem childItem)
+				{
+					newSection.add(new DocumentItem(childItem.Content, "Item", childItem.IsEditable));
+				}
+			}
+			return newSection;
+		}
+
+	}
 }
