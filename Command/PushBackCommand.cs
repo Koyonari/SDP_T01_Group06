@@ -3,35 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06.Command
 {
-    public class PushBackCommand : ApprovalCommand
+    public class PushBackCommand : Command
     {
+        private Document document;
         private string comment;
 
-        public PushBackCommand(Document document, User approver, string comment)
-        : base(document, approver)
+        public PushBackCommand(Document document, string comment)
         {
+            this.document = document;
             this.comment = comment;
         }
 
-        public override void execute()
+        public void execute()
         {
-            PreviousState = Document.getCurrentState();
-            Document.pushBack(comment);
-
-            //document.State = Document.DocumentState.PushedBack;
-            //document.NotifyCollaborators($"Document pushed back: {comment}");
+            DocumentState currentState = document.getCurrentState();
+            currentState.pushBack(comment);
+            Console.WriteLine("Document Pushed back.");
         }
 
-        public override void undo()
+        public void undo()
         {
-            Document.setCurrentState(PreviousState);
-
-
-            //document.State = Document.DocumentState.UnderReview;
-            //document.NotifyCollaborators("Push back undone.");
+            Console.WriteLine("Pushed back document cannot be changed.");
         }
 
     }

@@ -3,33 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06.Command
 {
-    public class RejectCommand : ApprovalCommand
+    public class RejectCommand : Command
     {
-        public RejectCommand(Document document, User approver)
-        : base(document, approver)
+        Document document;
+        public RejectCommand(Document document)
         {
+            this.document = document;
         }
 
-        public override void execute()
+        public void execute()
         {
-            PreviousState = Document.getCurrentState();
-            Document.reject();
-
-
-            //document.State = Document.DocumentState.Rejected;
-            //document.NotifyCollaborators("Document rejected.");
+            DocumentState currentState = document.getCurrentState();
+            currentState.reject();
+            Console.WriteLine("Document Rejected.");
         }
 
-        public override void undo()
+        public void undo()
         {
-            Document.setCurrentState(PreviousState);
-
-
-            //document.State = Document.DocumentState.Draft;
-            //document.NotifyCollaborators("Rejection undone.");
+            Console.WriteLine("Rejected document cannot be changed.");
         }
     }
 }

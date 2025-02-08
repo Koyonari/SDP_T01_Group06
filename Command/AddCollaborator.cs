@@ -6,22 +6,23 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    public class ConvertToWordCommand : Command
+    internal class AddCollaborator : Command
     {
-        Document document;
-        public ConvertToWordCommand(Document document)
+        private User collaborator;
+
+        public AddCollaborator(User collaborator)
         {
-            this.document = document;
+            this.collaborator = collaborator;
         }
 
         public void execute()
         {
-            //document.ConvertTo("Word");
+            // Add collaborator to the project
         }
 
         public void undo()
         {
-            //document.RevertConversion();
+            // Remove collaborator from the project
         }
     }
 }

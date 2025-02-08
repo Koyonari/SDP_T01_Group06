@@ -5,32 +5,30 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using SDP_T01_Group06;
+using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06.Command
 {
-    public class ApproveCommand : ApprovalCommand
+    public class ApproveCommand : Command
     {
-        public ApproveCommand(Document document, User approver)
-        : base(document, approver)
+        public Document document;
+        //public DocumentState previousState;
+
+        public ApproveCommand(Document document)
         {
+            this.document = document;
         }
 
-        public override void execute()
+        public void execute()
         {
-            PreviousState = Document.getCurrentState();
-            Document.approve();
-
-            //document.State = Document.DocumentState.Approved;
-            //document.NotifyCollaborators("Document approved.");
+            DocumentState currentState = document.getCurrentState();
+            currentState.approve();
+            Console.WriteLine("Document approved.");
         }
 
-        public override void undo()
+        public void undo()
         {
-            Document.setCurrentState(PreviousState);
-
-
-            //document.State = Document.DocumentState.UnderReview;
-            //document.NotifyCollaborators("Approval undone.");
+            Console.WriteLine("Approved document cannot be changed.");
         }
     }
 }

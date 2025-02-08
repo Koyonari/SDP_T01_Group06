@@ -11,8 +11,6 @@ namespace SDP_T01_Group06.Command
 
         private Command currentCommand;
         private Stack<Command> commandHistory = new Stack<Command>();
-        // Optionally a redo stack if you support redo as well.
-        //private Stack<Command> redoStack = new Stack<Command>();
 
         public DocumentInvoker()
         {
@@ -46,18 +44,6 @@ namespace SDP_T01_Group06.Command
                 //redoStack.Push(commandToUndo);
             }
         }
-
-        // Optional: redo the last undone command
-        //public void redoCommand()
-        //{
-        //    if (redoStack.Count > 0)
-        //    {
-        //        Command commandToRedo = redoStack.Pop();
-        //        commandToRedo.execute();
-        //        commandHistory.Push(commandToRedo);
-        //    }
-        //}
-
 
     }
 }

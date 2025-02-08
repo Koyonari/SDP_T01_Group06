@@ -6,22 +6,26 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    public class ConvertToWordCommand : Command
+    internal class EditCommand : Command
     {
-        Document document;
-        public ConvertToWordCommand(Document document)
+        private Document document;
+        private string content;
+
+
+        public EditCommand(Document document, string content)
         {
             this.document = document;
+            this.content = content;
         }
 
         public void execute()
         {
-            //document.ConvertTo("Word");
+            //document.Edit(content);
         }
 
         public void undo()
         {
-            //document.RevertConversion();
+            //document.RevertEdit();
         }
     }
 }

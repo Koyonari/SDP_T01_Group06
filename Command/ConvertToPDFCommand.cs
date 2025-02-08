@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    internal class ConvertToPDFCommand : ConversionCommand
+    internal class ConvertToPDFCommand : Command
     {
+        Document document;
 
         public ConvertToPDFCommand(Document document)
-             : base(document)
         {
+            this.document = document;
         }
-        public override void execute()
+        public void execute()
         {
             // Call the conversion operation in Document.
             //document.ConvertTo("PDF");
@@ -24,7 +25,7 @@ namespace SDP_T01_Group06.Command
             // You might store the previous format if needed for undo
         }
 
-        public override void undo()
+        public void undo()
         {
             // Undo conversion – implementation may vary.
             //document.RevertConversion();

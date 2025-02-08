@@ -8,17 +8,21 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    internal class CreateDocumentCommand : DocumentCommand
+    internal class CreateDocumentCommand : Command
     {
-        private DocumentState previousState;
+        private User User;
+        private List<Document> document;
 
         public CreateDocumentCommand(User user, List<Document> document)
-        : base(user, document)
         {
+            this.User = user;
+            this.document = document;
         }
 
-        public override void execute()
+        public void execute()
         {
+
+            // From CreateNewDocument in Program.cs
             Console.WriteLine("Document Types");
             Console.WriteLine("1. Grant Proposal");
             Console.WriteLine("2. Technical Report");
@@ -65,7 +69,7 @@ namespace SDP_T01_Group06.Command
 
         }
 
-        public override void undo()
+        public void undo()
         {
 
         }

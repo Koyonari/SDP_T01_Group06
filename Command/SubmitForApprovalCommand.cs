@@ -8,19 +8,21 @@ using SDP_T01_Group06.Factory;
 
 namespace SDP_T01_Group06.Command
 {
-    public class SubmitForApprovalCommand : DocumentCommand
+    public class SubmitForApprovalCommand : Command
     {
+        private User user;
+        private List<Document> documents;
         private DocumentState previousState;
 
-        public SubmitForApprovalCommand(User user, List<Document> document)
-        : base(user, document)
+        public SubmitForApprovalCommand(User user, List<Document> documents)
         {
+            this.user = user;
+            this.documents = documents;
         }
 
-        public override void execute()
+        public void execute()
         {
 
-            
             // Save the current state
             //previousState = Document.getCurrentState();
             //Document.submitForApproval(User);
@@ -38,7 +40,7 @@ namespace SDP_T01_Group06.Command
             //document.NotifyCollaborators("Document submitted for approval.");
         }
 
-        public override void undo()
+        public void undo()
         {
             // Undo
             // Restore the previous state.
