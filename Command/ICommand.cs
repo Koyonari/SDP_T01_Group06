@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    public interface Command
+    public interface ICommand
     {
         void execute();
         void undo();
+
     }
 }

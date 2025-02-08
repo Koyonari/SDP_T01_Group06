@@ -9,19 +9,25 @@ namespace SDP_T01_Group06.Command
     public class DocumentInvoker
     {
 
-        private Command currentCommand;
-        private Stack<Command> commandHistory = new Stack<Command>();
+        private ICommand currentCommand;
+        private ICommand[] hotkeys;
+        private Stack<ICommand> commandHistory = new Stack<ICommand>();
 
         public DocumentInvoker()
         {
-
+            this.hotkeys = new ICommand[3];
         }
+
         // Sets the current command
-        public void setCommand(Command command)
+        public void setCommand(ICommand command)
         {
             this.currentCommand = command;
         }
 
+        public void setHotkeys(ICommand command, int slot)
+        {
+            hotkeys[slot] = command;
+        }
         // Executes the command and stores it in history
         public void executeCommand()
         {
@@ -34,12 +40,17 @@ namespace SDP_T01_Group06.Command
             }
         }
 
+        public void executeHotKey(int slot)
+        {
+            hotkeys[slot].execute();
+        }
+
         // Undo the last command
         public void undoCommand()
         {
             if (commandHistory.Count > 0)
             {
-                Command commandToUndo = commandHistory.Pop();
+                ICommand commandToUndo = commandHistory.Pop();
                 commandToUndo.undo();
                 //redoStack.Push(commandToUndo);
             }

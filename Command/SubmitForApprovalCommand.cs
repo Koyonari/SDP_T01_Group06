@@ -8,21 +8,21 @@ using SDP_T01_Group06.Factory;
 
 namespace SDP_T01_Group06.Command
 {
-    public class SubmitForApprovalCommand : Command
+    public class SubmitForApprovalCommand : ICommand
     {
+        private Document document;
         private User user;
-        private List<Document> documents;
-        private DocumentState previousState;
+        //private DocumentState previousState;
 
-        public SubmitForApprovalCommand(User user, List<Document> documents)
+        public SubmitForApprovalCommand(Document document, User user)
         {
+            this.document = document;
             this.user = user;
-            this.documents = documents;
         }
 
         public void execute()
         {
-
+            document.submitForApproval(user);
             // Save the current state
             //previousState = Document.getCurrentState();
             //Document.submitForApproval(User);

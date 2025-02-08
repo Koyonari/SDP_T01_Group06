@@ -6,25 +6,22 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    internal class EditCommand : ICommand
+    internal class NominateApproverCommand : ICommand
     {
         private Document document;
-        //private User user;
-
-        public EditCommand(Document document)
+        private User user;
+        public NominateApproverCommand(Document document, User user)
         {
-            this.document = document;
-            //this.user = user;
+            this.user = user;
         }
-
         public void execute()
         {
-            document.edit();
+            // Add approver to the project
+            document.nominateApprover(user);
         }
-
         public void undo()
         {
-            //document.RevertEdit();
+            // Remove approver from the project
         }
     }
 }

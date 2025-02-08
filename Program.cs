@@ -107,6 +107,22 @@ namespace SDP_T01_Group06
 
         static void LoggedInMenu(User currentUser, List<Document> allDocuments, List<User> allUsers)
         {
+            DocumentInvoker documentInvoker = new DocumentInvoker();
+            ViewCommand viewOwnedCommand = new ViewCommand(currentUser, "Owned");
+            ViewCommand viewAssociatedCommand = new ViewCommand(currentUser, "Associated");
+            ViewCommand viewPendingCommand = new ViewCommand(currentUser, "Pending");
+
+            documentInvoker.setHotkeys(viewOwnedCommand, 0);
+            documentInvoker.setHotkeys(viewAssociatedCommand, 1);
+            documentInvoker.setHotkeys(viewPendingCommand, 2);
+
+            // CreateCommand Done
+            //EditCommand editCommand = new EditCommand(currentUser);
+            //ViewCommand viewCommand = new ViewCommand(currentUser);
+            //NominateApproverCommand nominateApproverCommand = new NominateApproverCommand(currentUser, allUsers);
+            //SubmitForApprovalCommand submitForApprovalCommand = new SubmitForApprovalCommand(currentUser);
+
+
             Console.Clear();
             AnsiConsole.Write(
                new FigletText("Document Workflow System")
@@ -135,34 +151,34 @@ namespace SDP_T01_Group06
                 switch (selectedOption)
                 {
                     case "Create a new document":
-                        CreateNewDocument(currentUser, allDocuments);
+                        CreateNewDocument(currentUser, allDocuments, documentInvoker);
                         break;
                     case "Edit existing document":
-                        EditExistingDocument(currentUser);
+                        EditExistingDocument(currentUser, documentInvoker);
                         break;
                     case "View Owned documents":
-                        ViewOwnedDocuments(currentUser);
+                        ViewOwnedDocuments(currentUser, documentInvoker);
                         break;
                     case "View Associated documents":
-                        ViewAssociatedDocuments(currentUser);
+                        ViewAssociatedDocuments(currentUser, documentInvoker);
                         break;
                     case "View Documents Awaiting For Your Review & Approval":
-                        ViewDocumentsAwaitingForReview(currentUser);
+                        ViewDocumentsAwaitingForReview(currentUser, documentInvoker);
                         break;
                     case "Nominate Approver for a document":
-                        NominateApproverForDocument(currentUser, allUsers);
+                        NominateApproverForDocument(currentUser, allUsers, documentInvoker);
                         break;
                     case "Submit existing document for approval":
-                        SubmitDocumentForApproval(currentUser);
+                        SubmitDocumentForApproval(currentUser, documentInvoker);
                         break;
                     case "View existing document status":
-                        ViewDocumentStatus(currentUser);
+                        ViewDocumentStatus(currentUser, documentInvoker);
                         break;
                     case "Review & Approve Document":
-                        ReviewDocument(currentUser);
+                        ReviewDocument(currentUser, documentInvoker);
                         break;
                     case "Convert document":
-                        ConvertDocument(currentUser, allDocuments);
+                        ConvertDocument(currentUser, allDocuments, documentInvoker);
                         break;
                     case "Log Out":
                         currentUser = null;
@@ -229,7 +245,7 @@ namespace SDP_T01_Group06
                 AnsiConsole.MarkupLine($"[red]{doc.DocumentName} - {doc.Owner.Name} [/]");
             }
         }
-        static void CreateNewDocument(User user, List<Document> allDocuments)
+        static void CreateNewDocument(User user, List<Document> allDocuments, DocumentInvoker documentInvoker)
         {
             Console.WriteLine("Document Types");
             Console.WriteLine("1. Grant Proposal");
@@ -261,20 +277,36 @@ namespace SDP_T01_Group06
                 }
             }
             Document doc1;
+            DocumentFactory factory;
+
             if (doctype == 1)
             {
-                GrantProposalFactory grantProposalFactory = new GrantProposalFactory();
-                doc1 = user.CreateDocument(grantProposalFactory);
+                //GrantProposalFactory grantProposalFactory = new GrantProposalFactory();
+                //doc1 = user.CreateDocument(grantProposalFactory);
+
+                factory = new GrantProposalFactory();
+
             }
             else
             {
-                TechnicalReportFactory tenicalReportFactory = new TechnicalReportFactory();
-                doc1 = user.CreateDocument(tenicalReportFactory);
+                //TechnicalReportFactory tenicalReportFactory = new TechnicalReportFactory();
+                //doc1 = user.CreateDocument(tenicalReportFactory);
+
+                factory = new TechnicalReportFactory();
+
             }
+            // Create and execute the command using the chosen factory.
+            CreateCommand createCommand = new CreateCommand(factory, user);
+            documentInvoker.setCommand(createCommand);
+            documentInvoker.executeCommand();
+
+            // Retrieve the result from the command.
+            doc1 = createCommand.getResult();
+
             allDocuments.Add(doc1);
         }
 
-        static void EditExistingDocument(User user)
+        static void EditExistingDocument(User user, DocumentInvoker documentInvoker)
         {
             Console.WriteLine("Available documents:");
             user.ListRelatedDocuments();
@@ -300,37 +332,43 @@ namespace SDP_T01_Group06
             } while (!isValid);
 
             Document selectedDoc = user.getRelatedDocument(choice-1);
-            selectedDoc.edit();
+            EditCommand editCommand = new EditCommand(selectedDoc);
+            documentInvoker.setCommand(editCommand);
+            documentInvoker.executeCommand();
+            //selectedDoc.edit();
         }
 
-        static void ViewOwnedDocuments(User user)
+        static void ViewOwnedDocuments(User user, DocumentInvoker documentInvoker)
         {
             // Implement the logic to view the user's documents
             AnsiConsole.MarkupLine("[green]Viewing Owned documents...[/]");
-            user.ListOwnedDocuments();
-
+            documentInvoker.executeHotKey(0);
+            //user.ListOwnedDocuments();
         }
 
-        static void ViewAssociatedDocuments(User user)
+        static void ViewAssociatedDocuments(User user, DocumentInvoker documentInvoker)
         {
             // Implement the logic to view the user's documents
             AnsiConsole.MarkupLine("[green]Viewing your documents...[/]");
-            user.ListRelatedDocuments();
+            documentInvoker.executeHotKey(1);
+            //user.ListRelatedDocuments();
         }
 
-        static void ViewDocumentsAwaitingForReview(User user)
+        static void ViewDocumentsAwaitingForReview(User user, DocumentInvoker documentInvoker)
         {
             // Implement the logic to view documents awaiting review
             AnsiConsole.MarkupLine("[green]Viewing documents awaiting review...[/]");
-            user.ListPendingDocsForReview();
+            documentInvoker.executeHotKey(2);
+            //user.ListPendingDocsForReview();
         }
 
-        static void NominateApproverForDocument(User user, List<User> allUsers)
+        static void NominateApproverForDocument(User user, List<User> allUsers, DocumentInvoker documentInvoker)
         {
             AnsiConsole.MarkupLine("[green]Nominate An Approver For a Document...[/]");
 
             Console.WriteLine("Available documents:");
-            user.ListRelatedDocuments();
+            documentInvoker.executeHotKey(1);
+            //user.ListRelatedDocuments();
 
             if (user.DocumentList.Count == 0)
             {
@@ -377,19 +415,24 @@ namespace SDP_T01_Group06
             } while (!isValid);
 
             User selectedUser = allUsers[choice - 1];
-            selectedDoc.nominateApprover(selectedUser);
+
+            NominateApproverCommand nominateApproverCommand = new NominateApproverCommand(selectedDoc, selectedUser);
+            documentInvoker.setCommand(nominateApproverCommand);
+            documentInvoker.executeCommand();
+            //selectedDoc.nominateApprover(selectedUser);
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
         }
 
-        static void SubmitDocumentForApproval(User user)
+        static void SubmitDocumentForApproval(User user, DocumentInvoker documentInvoker)
         {
             // Implement the logic to submit a document for approval
             AnsiConsole.MarkupLine("[green]Submitting a document for approval...[/]");
 
             Console.WriteLine("Available documents:");
-            user.ListRelatedDocuments();
+            documentInvoker.executeHotKey(1);
+            //user.ListRelatedDocuments();
 
             int choice;
             bool isValid;
@@ -406,24 +449,30 @@ namespace SDP_T01_Group06
             } while (!isValid);
 
             Document selectedDoc = user.getRelatedDocument(choice - 1);
-            selectedDoc.submitForApproval(user);
+
+            SubmitForApprovalCommand submitForApprovalCommand = new SubmitForApprovalCommand(selectedDoc, user);
+            documentInvoker.setCommand(submitForApprovalCommand);
+            documentInvoker.executeCommand();
+            //selectedDoc.submitForApproval(user);
         }
 
-        static void ViewDocumentStatus(User user)
+        static void ViewDocumentStatus(User user, DocumentInvoker documentInvoker)
         {
             // Implement the logic to view the status of a document
             AnsiConsole.MarkupLine("[green]Viewing the status of a document...[/]");
-            user.ListRelatedDocumentStatus();
+            documentInvoker.executeHotKey(1);
+            //user.ListRelatedDocumentStatus();
         }
 
-        static void ReviewDocument(User user)
+        static void ReviewDocument(User user, DocumentInvoker documentInvoker)
         {
             // Display Header
             AnsiConsole.MarkupLine("[green]Managing the review of a document...[/]");
 
             // Show Pending Documents
             Console.WriteLine("\nDocuments To Review:");
-            user.ListPendingDocsForReview();
+            documentInvoker.executeHotKey(2);
+            //user.ListPendingDocsForReview();
 
             // Get the user’s choice of document
             int choice;
@@ -452,25 +501,36 @@ namespace SDP_T01_Group06
             switch (action)
             {
                 case "Approve":
-                    selectedDoc.approve();
+                    ApproveCommand approveCommand = new ApproveCommand(selectedDoc);
+                    documentInvoker.setCommand(approveCommand);
+                    documentInvoker.executeCommand();
+                    //selectedDoc.approve();
                     break;
 
                 case "Pushback with Comment":
                     string comment = AnsiConsole.Ask<string>("Enter your comment for pushback: ");
-                    selectedDoc.pushBack(comment);
+                    PushBackCommand pushBackCommand = new PushBackCommand(selectedDoc, comment);
+                    documentInvoker.setCommand(pushBackCommand);
+                    documentInvoker.executeCommand();
+                    //selectedDoc.pushBack(comment);
                     break;
 
                 case "Reject":
-                    selectedDoc.reject();
+                    RejectCommand rejectCommand = new RejectCommand(selectedDoc);
+                    documentInvoker.setCommand(rejectCommand);
+                    documentInvoker.executeCommand();
+                    //selectedDoc.reject();
                     break;
             }
 
             Console.WriteLine("\nReview process completed successfully.");
         }
 
-        static void ConvertDocument(User user, List<Document> allDocuments)
+        static void ConvertDocument(User user, List<Document> allDocuments, DocumentInvoker documentInvoker)
         {
-            user.ListRelatedDocuments();
+            documentInvoker.executeHotKey(1);
+            //user.ListRelatedDocuments();
+
             // Display available documents
             //DocumentIterator iterator = new AssociatedDocumentsIterator(user);
             //List<Document> availableDocs = new List<Document>();
@@ -515,16 +575,26 @@ namespace SDP_T01_Group06
                     .Title("Select conversion format:")
                     .AddChoices(new[] { "Word", "PDF" }));
 
-            var converter = new DocumentConverter();
+            //var converter = new DocumentConverter();
+            Document chosenDoc = user.DocumentList[docChoice - 1];
+
+            // Declare a variable to hold the conversion command
+            IResultCommand conversionCommand = null;
 
             // Set conversion strategy based on selection
             switch (formatChoice)
             {
                 case "Word":
-                    converter.SetStrategy(new WordConverter());
+                    WordConverter wordConverter = new WordConverter();
+                    conversionCommand = new ConvertToWordCommand(user, chosenDoc, wordConverter);
+                    documentInvoker.setCommand(conversionCommand);
+                    //converter.SetStrategy(new WordConverter());
                     break;
                 case "PDF":
-                    converter.SetStrategy(new PDFConverter());
+                    PDFConverter pdfConverter = new PDFConverter();
+                    conversionCommand = new ConvertToPDFCommand(user, chosenDoc, pdfConverter);
+                    documentInvoker.setCommand(conversionCommand);
+                    //converter.SetStrategy(new PDFConverter());
                     break;
             }
 
@@ -536,7 +606,9 @@ namespace SDP_T01_Group06
                     {
                         ctx.Spinner(Spinner.Known.Dots);
                         ctx.SpinnerStyle(Style.Parse("green"));
-                        return converter.convert(user.DocumentList[docChoice - 1]);
+                        documentInvoker.executeCommand();
+                        return conversionCommand.getResult();
+                        //return converter.convert(user.DocumentList[docChoice - 1]);
                     });
 
                 user.AddDocument(convertedDoc);

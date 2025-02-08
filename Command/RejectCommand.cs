@@ -7,7 +7,7 @@ using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06.Command
 {
-    public class RejectCommand : Command
+    public class RejectCommand : ICommand
     {
         Document document;
         public RejectCommand(Document document)
@@ -17,8 +17,9 @@ namespace SDP_T01_Group06.Command
 
         public void execute()
         {
-            DocumentState currentState = document.getCurrentState();
-            currentState.reject();
+            //DocumentState currentState = document.getCurrentState();
+            //currentState.reject();
+            document.reject();
             Console.WriteLine("Document Rejected.");
         }
 

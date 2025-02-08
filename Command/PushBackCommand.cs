@@ -7,7 +7,7 @@ using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06.Command
 {
-    public class PushBackCommand : Command
+    public class PushBackCommand : ICommand
     {
         private Document document;
         private string comment;
@@ -20,8 +20,10 @@ namespace SDP_T01_Group06.Command
 
         public void execute()
         {
-            DocumentState currentState = document.getCurrentState();
-            currentState.pushBack(comment);
+            //DocumentState currentState = document.getCurrentState();
+            //currentState.pushBack(comment);
+
+            document.pushBack(comment);
             Console.WriteLine("Document Pushed back.");
         }
 

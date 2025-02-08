@@ -6,16 +6,31 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    internal class ViewCommand : Command
+    internal class ViewCommand : ICommand
     {
-        private Document document;
-        public ViewCommand(Document document)
+        private User user;
+        private string documentType;
+        public ViewCommand(User user, string documentType)
         {
-            this.document = document;
+            this.user = user;
+            this.documentType = documentType;
         }
         public void execute()
         {
             // View the document
+            if (documentType == "Owned")
+            {
+                user.ListOwnedDocuments();
+            }
+            else if (documentType == "Associated")
+            {
+                user.ListRelatedDocuments();
+            }
+            else if (documentType == "Pending")
+            {
+                user.ListPendingDocsForReview();
+            }
+
         }
         public void undo()
         {

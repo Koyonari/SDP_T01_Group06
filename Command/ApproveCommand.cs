@@ -9,7 +9,7 @@ using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06.Command
 {
-    public class ApproveCommand : Command
+    public class ApproveCommand : ICommand
     {
         public Document document;
         //public DocumentState previousState;
@@ -21,8 +21,12 @@ namespace SDP_T01_Group06.Command
 
         public void execute()
         {
-            DocumentState currentState = document.getCurrentState();
-            currentState.approve();
+            //Method 1
+            //DocumentState currentState = document.getCurrentState();
+            //currentState.approve();
+
+            //Method 2 (I thnik is this)
+            document.approve();
             Console.WriteLine("Document approved.");
         }
 

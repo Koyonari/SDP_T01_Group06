@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SDP_T01_Group06.Command
 {
-    internal class AddCollaborator : Command
+    internal class AddCollaborator : ICommand
     {
         private User collaborator;
 
