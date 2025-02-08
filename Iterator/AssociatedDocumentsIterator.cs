@@ -14,7 +14,7 @@ namespace SDP_T01_Group06.Iterator
 
         public AssociatedDocumentsIterator(User user)
         {
-            this.documents = user.DocumentList;
+            this.documents = user.DocumentList;            
             this.user = user;
         }
 
