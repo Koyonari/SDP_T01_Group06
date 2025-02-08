@@ -27,7 +27,6 @@ namespace SDP_T01_Group06.Command
 
             //Method 2 (I thnik is this)
             document.approve();
-            Console.WriteLine("Document approved.");
         }
 
         public void undo()

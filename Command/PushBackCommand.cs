@@ -24,7 +24,6 @@ namespace SDP_T01_Group06.Command
             //currentState.pushBack(comment);
 
             document.pushBack(comment);
-            Console.WriteLine("Document Pushed back.");
         }
 
         public void undo()

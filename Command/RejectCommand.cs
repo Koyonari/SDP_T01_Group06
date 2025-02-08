@@ -20,7 +20,6 @@ namespace SDP_T01_Group06.Command
             //DocumentState currentState = document.getCurrentState();
             //currentState.reject();
             document.reject();
-            Console.WriteLine("Document Rejected.");
         }
 
         public void undo()
