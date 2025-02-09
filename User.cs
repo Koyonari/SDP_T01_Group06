@@ -6,7 +6,7 @@ using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06
 {
-    public class User : DocumentAggregate, IObserver
+    public class User : DocumentAggregate
     {
         public string Name { get; set; }
 
@@ -228,11 +228,6 @@ namespace SDP_T01_Group06
             {
                 notification.MarkAsRead();
             }
-        }
-        public void update(string documentName, DocumentState newState)
-        {
-            string message = $"{documentName} has been {newState.GetType().Name}.";
-            AddNotification(new Notification(message));
         }
     }
 }

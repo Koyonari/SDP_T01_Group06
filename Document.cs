@@ -73,14 +73,11 @@ namespace SDP_T01_Group06
 
 		public void addCollaborator(User collaborator)
 		{
-			currentState.addCollaborator(collaborator);
-
-            // Register observer for collaborators
             if (!collaborators.Contains(collaborator))
             {
                 collaborators.Add(collaborator);
 
-                // Create and register observer for the collaborator
+                // Register the collaborator as an observer
                 Listener collaboratorObserver = new Listener(collaborator);
                 collaboratorObserver.AddDocument(this.documentSubject);
             }
