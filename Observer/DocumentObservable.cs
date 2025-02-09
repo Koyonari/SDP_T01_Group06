@@ -17,8 +17,14 @@ namespace SDP_T01_Group06.Observer
 
         public void setState(DocumentState newState)
         {
+            var oldState = CurrentState;
             CurrentState = newState;
-            notifyObservers();
+
+            // Only notify if the state has actually changed
+            if (oldState.GetType() != newState.GetType())
+            {
+                notifyObservers();
+            }
         }
 
         public void registerObserver(IObserver observer)

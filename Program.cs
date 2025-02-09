@@ -111,6 +111,14 @@ namespace SDP_T01_Group06
                new FigletText("Document Workflow System")
                    .LeftJustified()
                    .Color(Color.Blue));
+
+            // Show unread notifications count if any exist
+            var unreadNotifications = currentUser.GetNotifications(unreadOnly: true);
+            if (unreadNotifications.Any())
+            {
+                AnsiConsole.MarkupLine($"[yellow]You have {unreadNotifications.Count} unread notifications![/]");
+            }
+
             while (true)
             {
                 var selectedOption = AnsiConsole.Prompt(
@@ -120,6 +128,7 @@ namespace SDP_T01_Group06
                         .AddChoices(
                             "View Owned documents",
                             "View Associated documents",
+                             "View Notifications",
                             "Create a new document",
                             "Edit existing document",
                             "Add Collaborator to a document",
@@ -166,6 +175,9 @@ namespace SDP_T01_Group06
                         break;
                     case "Convert document":
                         ConvertDocument(currentUser, allDocuments);
+                        break;
+                    case "View Notifications":
+                        ViewNotifications(currentUser);
                         break;
                     case "Log Out":
                         currentUser = null;
@@ -215,6 +227,42 @@ namespace SDP_T01_Group06
             AnsiConsole.MarkupLine($"[red]User not found. Try again.[/]");
             return LoginAsUser(users); // Recursive call until a valid user is found
 
+        }
+
+        static void ViewNotifications(User user)
+        {
+            var notifications = user.GetNotifications();
+
+            if (!notifications.Any())
+            {
+                AnsiConsole.MarkupLine("[yellow]No notifications to display.[/]");
+                return;
+            }
+
+            var table = new Table();
+            table.AddColumn("Status");
+            table.AddColumn("Time");
+            table.AddColumn("Message");
+
+            foreach (var notification in notifications)
+            {
+                table.AddRow(
+                    notification.IsRead ? "[green]Read[/]" : "[red]Unread[/]",
+                    notification.Timestamp.ToString("g"),
+                    notification.Message
+                );
+            }
+
+            AnsiConsole.Write(table);
+
+            if (user.GetNotifications(unreadOnly: true).Any())
+            {
+                if (AnsiConsole.Confirm("Mark all notifications as read?"))
+                {
+                    user.MarkAllNotificationsAsRead();
+                    AnsiConsole.MarkupLine("[green]All notifications marked as read.[/]");
+                }
+            }
         }
 
         static void ListAllUsers(List<User> users)

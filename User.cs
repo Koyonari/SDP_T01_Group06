@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using SDP_T01_Group06.Factory;
 using SDP_T01_Group06.Iterator;
+using SDP_T01_Group06.Observer;
+using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06
 {
-    public class User : DocumentAggregate
+    public class User : DocumentAggregate, IObserver
     {
         public string Name { get; set; }
 
@@ -26,12 +23,14 @@ namespace SDP_T01_Group06
             get { return documentList; }
             set { documentList = value; }
         }
+        private List<Notification> notifications;
 
         public User(string name)
         {
             this.userID = Guid.NewGuid();
             Name = name;
             DocumentList = new List<Document>();
+            notifications = new List<Notification>();
         }
 
         public override string ToString() {
@@ -206,5 +205,30 @@ namespace SDP_T01_Group06
             throw new ArgumentException("Invalid iterator type");
         }
 
+        // Notify Observer
+        public void AddNotification(Notification notification)
+        {
+            notifications.Add(notification);
+        }
+
+        public List<Notification> GetNotifications(bool unreadOnly = false)
+        {
+            return unreadOnly
+                ? notifications.Where(n => !n.IsRead).ToList()
+                : notifications;
+        }
+
+        public void MarkAllNotificationsAsRead()
+        {
+            foreach (var notification in notifications)
+            {
+                notification.MarkAsRead();
+            }
+        }
+        public void update(string documentName, DocumentState newState)
+        {
+            string message = $"{documentName} has been {newState.GetType().Name}.";
+            AddNotification(new Notification(message));
+        }
     }
 }
