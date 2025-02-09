@@ -192,6 +192,11 @@ namespace SDP_T01_Group06
 
 			if (section.children.Count == 0)
 			{
+				if (!section.IsEditable)
+				{
+					Console.WriteLine("This section is not editable. Cannot select it.");
+					return;
+				}
 				currentSection = section;
 				Console.WriteLine("No sub-sections available. Selected current section: " + section.SectionName);
 				return;
@@ -203,29 +208,38 @@ namespace SDP_T01_Group06
 				DocumentComponent comp = section.children[i];
 				if (comp is DocumentSection ds)
 				{
-					Console.WriteLine($"{i + 1}. Section: {ds.SectionName}");
+					// Show whether the section is editable.
+					string editableMark = ds.IsEditable ? "" : " (Not Editable)";
+					Console.WriteLine($"{i + 1}. Section: {ds.SectionName}{editableMark}");
 				}
 				else if (comp is DocumentItem di)
 				{
-					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content} (Cannot be selected as a section)");
+					// Even if an item is editable, it cannot be selected as a section.
+					string editableMark = di.IsEditable ? "" : " (Not Editable)";
+					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content}{editableMark} (Cannot be selected as a section)");
 				}
 			}
 
 			while (true)
 			{
 				Console.Write($"Enter the number of the component to select (0 to confirm current section, 1-{section.children.Count} to navigate): ");
-				string input = Console.ReadLine()?.Trim();
+				string input = Console.ReadLine();
 
-				// Validate numeric input
+				// validation
 				if (!int.TryParse(input, out int choice))
 				{
 					Console.WriteLine("Invalid input. Please enter a numeric value.");
 					continue;
 				}
 
-				// Handle current section selection
+				// current section
 				if (choice == 0)
 				{
+					if (!section.IsEditable)
+					{
+						Console.WriteLine($"Error: Section '{section.SectionName}' is not editable, cannot confirm selection.");
+						continue;
+					}
 					currentSection = section;
 					Console.WriteLine($"Confirmed current section: {section.SectionName}");
 					return;
@@ -240,7 +254,7 @@ namespace SDP_T01_Group06
 
 				DocumentComponent selected = section.children[choice - 1];
 
-				// Prevent selecting a leaf node (DocumentItem)
+				// Prevent selecting a leaf node (DocumentItem) as a section.
 				if (selected is DocumentItem item)
 				{
 					Console.WriteLine($"Error: '{item.Content}' is an item and cannot be selected as a section.");
@@ -250,6 +264,12 @@ namespace SDP_T01_Group06
 				// Handle section selection (only DocumentSections can be navigated into)
 				if (selected is DocumentSection childSection)
 				{
+					if (!childSection.IsEditable)
+					{
+						Console.WriteLine($"Error: Section '{childSection.SectionName}' is not editable.");
+						continue;
+					}
+					// Recursively navigate into the editable section.
 					selectSection(childSection, level + 1);
 					return;
 				}
@@ -258,6 +278,7 @@ namespace SDP_T01_Group06
 				return;
 			}
 		}
+
 
 		public void displayDocumentContent()
 		{
