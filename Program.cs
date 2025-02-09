@@ -126,7 +126,7 @@ namespace SDP_T01_Group06
                             "Nominate Approver for a document",
                             "Submit existing document for approval",
                             "View existing document status",
-                            "View Documents Awaiting For Your Review",
+                            "View Documents Pending Your Approval",
                             "Review & Approve Document",
                             "Convert document",
                             "Log Out"
@@ -149,8 +149,8 @@ namespace SDP_T01_Group06
                     case "Add Collaborator to a document":
                         AddCollaborator(currentUser, allUsers);
                         break;
-                    case "View Documents Awaiting For Your Review":
-                        ViewDocumentsAwaitingForReview(currentUser);
+                    case "View Documents Pending Your Approval":
+                        ViewDocumentsAwaitingForApproval(currentUser);
                         break;
                     case "Nominate Approver for a document":
                         NominateApproverForDocument(currentUser, allUsers);
@@ -311,7 +311,8 @@ namespace SDP_T01_Group06
             // Implement the logic to view the user's documents
             AnsiConsole.MarkupLine("[green]Viewing Owned documents...[/]");
             user.ListOwnedDocuments();
-
+            Console.WriteLine();
+            Console.WriteLine();
         }
 
         static void ViewAssociatedDocuments(User user)
@@ -319,13 +320,17 @@ namespace SDP_T01_Group06
             // Implement the logic to view the user's documents
             AnsiConsole.MarkupLine("[green]Viewing your documents...[/]");
             user.ListRelatedDocuments();
+            Console.WriteLine();
+            Console.WriteLine();
         }
 
-        static void ViewDocumentsAwaitingForReview(User user)
+        static void ViewDocumentsAwaitingForApproval(User user)
         {
             // Implement the logic to view documents awaiting review
-            AnsiConsole.MarkupLine("[green]Viewing documents awaiting review...[/]");
+            AnsiConsole.MarkupLine("[green]Viewing Documents Awaiting Approval...[/]");
             user.ListPendingDocsForReview();
+            Console.WriteLine();
+            Console.WriteLine();
         }
 
         static void AddCollaborator(User user, List<User> allUsers)
@@ -502,6 +507,7 @@ namespace SDP_T01_Group06
             // Retrieve the selected document
             Document selectedDoc = user.getPendingDocument(choice - 1);
             Console.WriteLine($"\nSelected Document: {selectedDoc.DocumentName}");
+            selectedDoc.displayDocumentContent();
 
             // Ask for action (Approve, Pushback with Comment, Reject)
             var action = AnsiConsole.Prompt(
