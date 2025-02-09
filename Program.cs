@@ -548,6 +548,7 @@ namespace SDP_T01_Group06
             int choice;
             do
             {
+                if (user.getNoOfPendingDocuments() == 0) { Console.WriteLine(""); return; }
                 choice = AnsiConsole.Ask<int>($"Enter the index of the document to edit (1-{user.getNoOfPendingDocuments()}): ");
 
                 if (choice < 1 || choice > user.getNoOfPendingDocuments())
