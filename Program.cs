@@ -31,14 +31,19 @@ namespace SDP_T01_Group06
 
             // Create documents
             // Simulate user input (this will replace Console.ReadLine())
+            // Test Docs with Name manually set            
+
             Console.SetIn(new StringReader("GP1\n"));
             Document doc1 = grantProposalFactory.CreateDocument(user1);
+            doc1.DocumentName = "GP1";
             user1.DocumentList.Add(doc1);
             Console.SetIn(new StringReader("TR1\n"));
             Document doc2 = tenicalReportFactory.CreateDocument(user2);
+            doc2.DocumentName = "TR1";
             user2.DocumentList.Add(doc2);
             Console.SetIn(new StringReader("GP2\n"));
             Document doc3 = grantProposalFactory.CreateDocument(user3);
+            doc3.DocumentName = "GP2";
             user3.DocumentList.Add(doc3);
 
             // 🔹 Restore standard input for manual entry
@@ -63,7 +68,7 @@ namespace SDP_T01_Group06
             allDocuments.Add(doc1);
             allDocuments.Add(doc2);
             allDocuments.Add(doc3);
-
+            
             Console.Clear();
 
             AnsiConsole.Write(
@@ -101,7 +106,8 @@ namespace SDP_T01_Group06
                         break;
                 }
             }
-
+            
+            
         }
 
         static void LoggedInMenu(User currentUser, List<Document> allDocuments, List<User> allUsers)

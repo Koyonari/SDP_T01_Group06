@@ -73,9 +73,10 @@ namespace SDP_T01_Group06
 
 		public void addCollaborator(User collaborator)
 		{
-            if (!collaborators.Contains(collaborator))
+            if (!collaborators.Contains(collaborator) && this.owner != collaborator)
             {
                 collaborators.Add(collaborator);
+				collaborator.DocumentList.Add(this);
 
                 // Register the collaborator as an observer
                 Listener collaboratorObserver = new Listener(collaborator);
@@ -142,12 +143,15 @@ namespace SDP_T01_Group06
 		{
 			Console.Write("Please enter the name of the document: ");
 			string docname = Console.ReadLine();
-			while (docname == "")
+
+            Console.WriteLine(docname);
+            while (docname == "")
 			{
-				Console.Write("Please enter the name of the document: ");
+
+				Console.Write("Invlid Input. Please enter the name of the document: ");
 				docname = Console.ReadLine();
 			}
-			documentName = docname;
+            documentName = docname;
 		}
 		public void addHeader()
 		{

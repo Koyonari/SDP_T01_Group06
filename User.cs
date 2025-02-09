@@ -199,9 +199,9 @@ namespace SDP_T01_Group06
                 case "associated":
                     return new AssociatedDocumentsIterator(this);
                 case "owned":
-                    return new AssociatedDocumentsIterator(this);
+                    return new OwnedDocumentsIterator(this);
                 case "pending":
-                    return new AssociatedDocumentsIterator(this);
+                    return new PendingDocumentsIterator(this);
             }
             throw new ArgumentException("Invalid iterator type");
         }
