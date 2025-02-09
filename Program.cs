@@ -592,43 +592,43 @@ namespace SDP_T01_Group06
         static void ConvertDocument(User user, List<Document> allDocuments)
         {
             user.ListRelatedDocuments();
-            // Display available documents
-            //DocumentIterator iterator = new AssociatedDocumentsIterator(user);
-            //List<Document> availableDocs = new List<Document>();
 
-            var table = new Table();
-            table.AddColumn("Number");
-            table.AddColumn("Document Name");
-
-            int position = 1;
-            for (int i = 0; i < user.DocumentList.Count; i++)
+            // Get only the documents the user is associated with
+            List<Document> associatedDocs = new List<Document>();
+            foreach (Document doc in user.DocumentList)
             {
-                table.AddRow(position.ToString(), user.DocumentList[i].DocumentName);
+                if (doc.Owner == user || doc.Collaborators.Contains(user))
+                {
+                    associatedDocs.Add(doc);
+                }
             }
 
-            //while (iterator.HasNext())
-            //{
-            //    Document doc = iterator.Next();
-            //    availableDocs.Add(doc);
-            //    table.AddRow(position.ToString(), doc.DocumentName);
-            //    position++;
-            //}
-
-            if (user.DocumentList.Count == 0)
+            if (associatedDocs.Count == 0)
             {
                 AnsiConsole.MarkupLine("[red]No documents available for conversion.[/]");
                 return;
             }
 
             AnsiConsole.MarkupLine("\n[blue]Available documents for conversion:[/]");
+
+            var table = new Table();
+            table.AddColumn(new TableColumn("Number").Centered());
+            table.AddColumn(new TableColumn("Document Name"));
+
+            // Add only associated documents to the table
+            for (int i = 0; i < associatedDocs.Count; i++)
+            {
+                table.AddRow((i + 1).ToString(), associatedDocs[i].DocumentName);
+            }
+
             AnsiConsole.Write(table);
 
             // Select document using AnsiConsole prompt
             var docChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<int>()
                     .Title("Select a document to convert:")
-                    .AddChoices(Enumerable.Range(1, user.getNoOfRelatedDocuments()))
-                    .UseConverter(i => user.DocumentList[i - 1].DocumentName));
+                    .AddChoices(Enumerable.Range(1, associatedDocs.Count))
+                    .UseConverter(i => $"{i}. {associatedDocs[i - 1].DocumentName}"));
 
             // Select conversion format using AnsiConsole prompt
             var formatChoice = AnsiConsole.Prompt(
@@ -636,17 +636,12 @@ namespace SDP_T01_Group06
                     .Title("Select conversion format:")
                     .AddChoices(new[] { "Word", "PDF" }));
 
-            var converter = new DocumentConverter();
+            var converter = new DocumentConverter(); // Will use PDF by default
 
             // Set conversion strategy based on selection
-            switch (formatChoice)
+            if (formatChoice == "Word")
             {
-                case "Word":
-                    converter.SetStrategy(new WordConverter());
-                    break;
-                case "PDF":
-                    converter.SetStrategy(new PDFConverter());
-                    break;
+                converter.SetStrategy(new WordConverter());
             }
 
             try
@@ -657,7 +652,7 @@ namespace SDP_T01_Group06
                     {
                         ctx.Spinner(Spinner.Known.Dots);
                         ctx.SpinnerStyle(Style.Parse("green"));
-                        return converter.convert(user.DocumentList[docChoice - 1]);
+                        return converter.convert(associatedDocs[docChoice - 1]);
                     });
 
                 user.AddDocument(convertedDoc);
