@@ -4,18 +4,25 @@ namespace SDP_T01_Group06.Observer
 {
     public class Listener : IObserver
     {
-        public string Name { get; private set; }
+        private User user;
         private List<DocumentObservable> associatedDocuments;
 
-        public Listener(string name)
+        public string Name { get { return user.Name; } }
+
+        public Listener(User user)
         {
-            Name = name;
+            this.user = user;
             associatedDocuments = new List<DocumentObservable>();
         }
 
         public void update(string documentName, DocumentState newState)
         {
-            Console.WriteLine($"{documentName} has been {newState.GetType().Name}.");
+            // Create notification message based on new state
+            string stateChange = newState.GetType().Name.Replace("State", "");
+            string message = $"Document '{documentName}' has changed to {stateChange} state";
+
+            // Add notification to user
+            user.AddNotification(new Notification(message));
         }
 
         public void AddDocument(DocumentObservable document)

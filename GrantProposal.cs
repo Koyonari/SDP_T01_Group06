@@ -55,6 +55,7 @@ namespace SDP_T01_Group06
             budgetSection.add(new DocumentItem(budget, "Budget"));
             DocumentComponent mainContent = rootsection.getChild(1); // get body section to insert
             mainContent.add(budgetSection);
-        }
+			Console.WriteLine("Budget Breakdown added to document");
+		}
     }
 }

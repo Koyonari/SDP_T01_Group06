@@ -45,8 +45,13 @@ namespace SDP_T01_Group06
 			this.previouslyrejected = false;
 			this.collaborators = new List<User>();
 			this.rootsection = new DocumentSection("Document Root");
+
+            // Initialize document subject with name and state
+            getDocumentName();
             this.documentSubject = new DocumentObservable(this.documentName, this.currentState);
-            Listener ownerObserver = new Listener(owner.Name);
+
+            // Register owner as an observer
+            Listener ownerObserver = new Listener(owner);
             ownerObserver.AddDocument(this.documentSubject);
         }
 
@@ -67,17 +72,33 @@ namespace SDP_T01_Group06
 		}
 
 		public void addCollaborator(User collaborator)
-		{
-			currentState.addCollaborator(collaborator);
+        {
+            // Check if the collaborator exists by comparing names since that's the unique identifier
+            bool isExistingCollaborator = collaborators.Any(c => c.Name.Equals(collaborator.Name, StringComparison.OrdinalIgnoreCase));
 
-			// Register observer
-            if (!collaborators.Contains(collaborator))
+            if (!isExistingCollaborator && this.owner.Name != collaborator.Name)
             {
                 collaborators.Add(collaborator);
+                if (!collaborator.DocumentList.Contains(this))
+                {
+                    collaborator.DocumentList.Add(this);
+                }
 
-                // Create and register observer for the collaborator
-                Listener collaboratorObserver = new Listener(collaborator.Name);
+                // Register the collaborator as an observer
+                Listener collaboratorObserver = new Listener(collaborator);
                 collaboratorObserver.AddDocument(this.documentSubject);
+
+                // Notify current state
+                currentState.addCollaborator(collaborator);
+                Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
+            }
+            else if (isExistingCollaborator)
+            {
+                Console.WriteLine($"{collaborator.Name} is already a collaborator.");
+            }
+            else
+            {
+                Console.WriteLine($"{collaborator.Name} cannot be added as a collaborator (document owner).");
             }
         }
 
@@ -120,7 +141,8 @@ namespace SDP_T01_Group06
 		public void setCurrentState(DocumentState currentState)
 		{
 			this.currentState = currentState;
-		}
+            this.documentSubject.setState(currentState);
+        }
 
 		public DocumentState getCurrentState()
 		{
@@ -129,7 +151,6 @@ namespace SDP_T01_Group06
 
 		public void assembleDocument()
 		{
-			getDocumentName(); // concrete operation
 			addHeader(); // concrete operation
 			createBody(); // primitive operation
 			addFooter(); // concrete operation
@@ -139,12 +160,15 @@ namespace SDP_T01_Group06
 		{
 			Console.Write("Please enter the name of the document: ");
 			string docname = Console.ReadLine();
-			while (docname == "")
+
+            Console.WriteLine(docname);
+            while (docname == "")
 			{
-				Console.Write("Please enter the name of the document: ");
+
+				Console.Write("Invlid Input. Please enter the name of the document: ");
 				docname = Console.ReadLine();
 			}
-			documentName = docname;
+            documentName = docname;
 		}
 		public void addHeader()
 		{
@@ -186,6 +210,11 @@ namespace SDP_T01_Group06
 
 			if (section.children.Count == 0)
 			{
+				if (!section.IsEditable)
+				{
+					Console.WriteLine("This section is not editable. Cannot select it.");
+					return;
+				}
 				currentSection = section;
 				Console.WriteLine("No sub-sections available. Selected current section: " + section.SectionName);
 				return;
@@ -197,29 +226,38 @@ namespace SDP_T01_Group06
 				DocumentComponent comp = section.children[i];
 				if (comp is DocumentSection ds)
 				{
-					Console.WriteLine($"{i + 1}. Section: {ds.SectionName}");
+					// Show whether the section is editable.
+					string editableMark = ds.IsEditable ? "" : " (Not Editable)";
+					Console.WriteLine($"{i + 1}. Section: {ds.SectionName}{editableMark}");
 				}
 				else if (comp is DocumentItem di)
 				{
-					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content} (Cannot be selected as a section)");
+					// Even if an item is editable, it cannot be selected as a section.
+					string editableMark = di.IsEditable ? "" : " (Not Editable)";
+					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content}{editableMark} (Cannot be selected as a section)");
 				}
 			}
 
 			while (true)
 			{
 				Console.Write($"Enter the number of the component to select (0 to confirm current section, 1-{section.children.Count} to navigate): ");
-				string input = Console.ReadLine()?.Trim();
+				string input = Console.ReadLine();
 
-				// Validate numeric input
+				// validation
 				if (!int.TryParse(input, out int choice))
 				{
 					Console.WriteLine("Invalid input. Please enter a numeric value.");
 					continue;
 				}
 
-				// Handle current section selection
+				// current section
 				if (choice == 0)
 				{
+					if (!section.IsEditable)
+					{
+						Console.WriteLine($"Error: Section '{section.SectionName}' is not editable, cannot confirm selection.");
+						continue;
+					}
 					currentSection = section;
 					Console.WriteLine($"Confirmed current section: {section.SectionName}");
 					return;
@@ -234,7 +272,7 @@ namespace SDP_T01_Group06
 
 				DocumentComponent selected = section.children[choice - 1];
 
-				// Prevent selecting a leaf node (DocumentItem)
+				// Prevent selecting a leaf node (DocumentItem) as a section.
 				if (selected is DocumentItem item)
 				{
 					Console.WriteLine($"Error: '{item.Content}' is an item and cannot be selected as a section.");
@@ -244,6 +282,12 @@ namespace SDP_T01_Group06
 				// Handle section selection (only DocumentSections can be navigated into)
 				if (selected is DocumentSection childSection)
 				{
+					if (!childSection.IsEditable)
+					{
+						Console.WriteLine($"Error: Section '{childSection.SectionName}' is not editable.");
+						continue;
+					}
+					// Recursively navigate into the editable section.
 					selectSection(childSection, level + 1);
 					return;
 				}
@@ -254,18 +298,22 @@ namespace SDP_T01_Group06
 		}
 
 
-
+		public void displayDocumentContent()
+		{
+			Console.WriteLine("Document Content:");
+			rootsection.display();
+        }
 
 		protected void DisplaySections(DocumentSection section, int level)
 		{
 			Console.WriteLine($"{new string(' ', level * 2)}{level}. {section.SectionName}");
-			//foreach (DocumentComponent child in section.children)
-			//{
-			//	if (child is DocumentSection childSection)
-			//	{
-			//		DisplaySections(childSection, level + 1);
-			//	}
-			//}
+			foreach (DocumentComponent child in section.children)
+			{
+				if (child is DocumentSection childSection)
+				{
+					DisplaySections(childSection, level + 1);
+				}
+			}
 		}
 
 		public abstract void editDocument();
@@ -277,7 +325,7 @@ namespace SDP_T01_Group06
 			Document clonedDoc = (Document)this.MemberwiseClone();
 
 			// Deep copy lists and complex objects
-			clonedDoc.collaborators = new List<User>(this.collaborators);
+            clonedDoc.collaborators = new List<User>(this.collaborators);
 			clonedDoc.rootsection = cloneSection(this.rootsection);
 			return clonedDoc;
 		}

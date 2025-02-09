@@ -8,6 +8,6 @@ namespace SDP_T01_Group06.Iterator
 {
     public interface DocumentAggregate
     {
-        DocumentIterator createDocumentIterator();
+        DocumentIterator createDocumentIterator(string type);
     }
 }

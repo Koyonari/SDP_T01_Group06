@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using SDP_T01_Group06.Factory;
 using SDP_T01_Group06.Iterator;
+using SDP_T01_Group06.Observer;
+using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06
 {
@@ -26,12 +23,14 @@ namespace SDP_T01_Group06
             get { return documentList; }
             set { documentList = value; }
         }
+        private List<Notification> notifications;
 
         public User(string name)
         {
             this.userID = Guid.NewGuid();
             Name = name;
             DocumentList = new List<Document>();
+            notifications = new List<Notification>();
         }
 
         public override string ToString() {
@@ -45,9 +44,12 @@ namespace SDP_T01_Group06
             return newDoc;
         }
 
-        public void AddDocument(Document doc)
+        public void AddDocument(Document document)
         {
-            documentList.Add(doc);
+            if (!documentList.Contains(document))
+            {
+                documentList.Add(document);
+            }
         }
 
         public Document getRelatedDocument(int index)
@@ -177,7 +179,12 @@ namespace SDP_T01_Group06
         }
         public void ListPendingDocsForReview()
         {
-            DocumentIterator iterator = createDocumentIterator("pending");
+            DocumentIterator iterator = new PendingDocumentsIterator(this);
+            if (!iterator.HasNext())
+            {
+                Console.WriteLine($"\nYou have no documents pending for review.");
+                return;
+            }
             Console.WriteLine($"\nDocuments pending review for {Name}:");
             int index = 1;
             while (iterator.HasNext())
@@ -195,11 +202,35 @@ namespace SDP_T01_Group06
                 case "associated":
                     return new AssociatedDocumentsIterator(this);
                 case "owned":
-                    return new AssociatedDocumentsIterator(this);
+                    return new OwnedDocumentsIterator(this);
                 case "pending":
-                    return new AssociatedDocumentsIterator(this);
+                    return new PendingDocumentsIterator(this);
             }
             throw new ArgumentException("Invalid iterator type");
+        }
+
+        // Notify Observer
+        public void AddNotification(Notification notification)
+        {
+            if (!notifications.Contains(notification))
+            {
+                notifications.Add(notification);
+            }
+        }
+
+        public List<Notification> GetNotifications(bool unreadOnly = false)
+        {
+            return unreadOnly
+                ? notifications.Where(n => !n.IsRead).ToList()
+                : notifications;
+        }
+
+        public void MarkAllNotificationsAsRead()
+        {
+            foreach (var notification in notifications)
+            {
+                notification.MarkAsRead();
+            }
         }
     }
 }
