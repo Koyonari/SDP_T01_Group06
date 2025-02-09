@@ -44,9 +44,12 @@ namespace SDP_T01_Group06
             return newDoc;
         }
 
-        public void AddDocument(Document doc)
+        public void AddDocument(Document document)
         {
-            documentList.Add(doc);
+            if (!documentList.Contains(document))
+            {
+                documentList.Add(document);
+            }
         }
 
         public Document getRelatedDocument(int index)
