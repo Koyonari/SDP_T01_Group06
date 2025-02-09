@@ -642,6 +642,10 @@ namespace SDP_T01_Group06
             {
                 converter.SetStrategy(new WordConverter());
             }
+            else if (formatChoice == "PDF")
+            {
+                converter.SetStrategy(new PDFConverter());
+            }
 
             try
             {
