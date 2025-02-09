@@ -51,7 +51,7 @@ namespace SDP_T01_Group06
             Console.WriteLine("Technical Report body added to document");
         }
 
-        public override void addCodeSnippet()
+        public void addCodeSnippet()
         {
             var codeSection = new DocumentSection("Code Section");
             Console.Write("Enter code snippet: ");

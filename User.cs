@@ -9,7 +9,7 @@ using SDP_T01_Group06.Iterator;
 
 namespace SDP_T01_Group06
 {
-    public class User
+    public class User : DocumentAggregate
     {
         public string Name { get; set; }
 
@@ -135,19 +135,6 @@ namespace SDP_T01_Group06
             return count;
         }
 
-        public void ListRelatedDocuments()
-        {
-            DocumentIterator iterator = new AssociatedDocumentsIterator(this);
-            Console.WriteLine($"\nDocuments associated with {Name}:");
-            int index = 1;
-            while (iterator.HasNext())
-            {
-                Document doc = iterator.Next();
-                Console.WriteLine($"{index}. {doc.DocumentName}");
-                index++;
-            }
-        }
-
         public void ListRelatedDocumentStatus()
         {
             DocumentIterator iterator = new AssociatedDocumentsIterator(this);
@@ -165,7 +152,7 @@ namespace SDP_T01_Group06
 
         public void ListOwnedDocuments()
         {
-            DocumentIterator iterator = new OwnedDocumentsIterator(this);
+            DocumentIterator iterator = createDocumentIterator("owned");
             Console.WriteLine($"\nDocuments Owned by {Name}:");
             int index = 1;
             while (iterator.HasNext())
@@ -176,6 +163,18 @@ namespace SDP_T01_Group06
             }
         }
 
+        public void ListRelatedDocuments()
+        {
+            DocumentIterator iterator = createDocumentIterator("associated");
+            Console.WriteLine($"\nDocuments associated with {Name}:");
+            int index = 1;
+            while (iterator.HasNext())
+            {
+                Document doc = iterator.Next();
+                Console.WriteLine($"{index}. {doc.DocumentName}");
+                index++;
+            }
+        }
         public void ListPendingDocsForReview()
         {
             DocumentIterator iterator = new PendingDocumentsIterator(this);
@@ -192,5 +191,20 @@ namespace SDP_T01_Group06
                 index++;
             }
         }
+
+        public DocumentIterator createDocumentIterator(string type)
+        {
+            switch (type.ToLower())
+            {
+                case "associated":
+                    return new AssociatedDocumentsIterator(this);
+                case "owned":
+                    return new AssociatedDocumentsIterator(this);
+                case "pending":
+                    return new AssociatedDocumentsIterator(this);
+            }
+            throw new ArgumentException("Invalid iterator type");
+        }
+
     }
 }
