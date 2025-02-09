@@ -442,7 +442,6 @@ namespace SDP_T01_Group06
             selectedDoc.addCollaborator(selectedUser);
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine();
         }
 
         static void NominateApproverForDocument(User user, List<User> allUsers)

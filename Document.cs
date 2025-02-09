@@ -72,15 +72,33 @@ namespace SDP_T01_Group06
 		}
 
 		public void addCollaborator(User collaborator)
-		{
-            if (!collaborators.Contains(collaborator) && this.owner != collaborator)
+        {
+            // Check if the collaborator exists by comparing names since that's the unique identifier
+            bool isExistingCollaborator = collaborators.Any(c => c.Name.Equals(collaborator.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (!isExistingCollaborator && this.owner.Name != collaborator.Name)
             {
                 collaborators.Add(collaborator);
-				collaborator.DocumentList.Add(this);
+                if (!collaborator.DocumentList.Contains(this))
+                {
+                    collaborator.DocumentList.Add(this);
+                }
 
                 // Register the collaborator as an observer
                 Listener collaboratorObserver = new Listener(collaborator);
                 collaboratorObserver.AddDocument(this.documentSubject);
+
+                // Notify current state
+                currentState.addCollaborator(collaborator);
+                Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
+            }
+            else if (isExistingCollaborator)
+            {
+                Console.WriteLine($"{collaborator.Name} is already a collaborator.");
+            }
+            else
+            {
+                Console.WriteLine($"{collaborator.Name} cannot be added as a collaborator (document owner).");
             }
         }
 
