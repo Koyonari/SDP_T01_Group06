@@ -30,6 +30,10 @@ namespace SDP_T01_Group06.Command
             documents.Remove(newDocument);
             user.DocumentList.Remove(newDocument);
         }
+        public bool isUndoable()
+        {
+            return true;
+        }
         public Document getResult()
         {
             return newDocument;

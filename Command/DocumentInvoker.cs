@@ -34,7 +34,8 @@ namespace SDP_T01_Group06.Command
             if (currentCommand != null)
             {
                 currentCommand.execute();
-                commandHistory.Push(currentCommand);
+                if (currentCommand.isUndoable())
+                    commandHistory.Push(currentCommand);
                 // Clear redo stack when a new command is executed
                 //redoStack.Clear();
             }
@@ -51,10 +52,13 @@ namespace SDP_T01_Group06.Command
             Console.WriteLine("Undo method called");
             if (commandHistory.Count > 0)
             {
-                Console.WriteLine("Has Command");
                 ICommand commandToUndo = commandHistory.Pop();
                 commandToUndo.undo();
                 //redoStack.Push(commandToUndo);
+            }
+            else
+            {
+                Console.WriteLine("No command to undo");
             }
         }
 

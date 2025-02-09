@@ -39,5 +39,9 @@ namespace SDP_T01_Group06.Command
         {
             // Close the document
         }
+        public bool isUndoable()
+        {
+            return false;
+        }
     }
 }

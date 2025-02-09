@@ -10,6 +10,6 @@ namespace SDP_T01_Group06.Command
     {
         void execute();
         void undo();
-
+        bool isUndoable();
     }
 }

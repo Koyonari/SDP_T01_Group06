@@ -30,6 +30,10 @@ namespace SDP_T01_Group06.Command
 
         public void undo() { }
 
+        public bool isUndoable()
+        {
+            return false;
+        }
         public Document getResult()
         {
             return document;

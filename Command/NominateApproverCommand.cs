@@ -24,5 +24,9 @@ namespace SDP_T01_Group06.Command
         {
             // Remove approver from the project
         }
+        public bool isUndoable()
+        {
+            return false;
+        }
     }
 }

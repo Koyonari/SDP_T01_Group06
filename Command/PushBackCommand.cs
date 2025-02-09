@@ -30,6 +30,9 @@ namespace SDP_T01_Group06.Command
         {
             Console.WriteLine("Pushed back document cannot be changed.");
         }
-
+        public bool isUndoable()
+        {
+            return false;
+        }
     }
 }

@@ -42,6 +42,7 @@ namespace SDP_T01_Group06.Command
 
         public void undo()
         {
+            document.undoSubmission(user);
             // Undo
             // Restore the previous state.
             //Document.undoSubmission(User);
@@ -56,6 +57,9 @@ namespace SDP_T01_Group06.Command
             //document.State = Document.DocumentState.Draft;
             //document.NotifyCollaborators("Submission for approval undone.");
         }
-
+        public bool isUndoable()
+        {
+            return true;
+        }
     }
 }

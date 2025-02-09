@@ -26,5 +26,9 @@ namespace SDP_T01_Group06.Command
         {
             //document.RevertEdit();
         }
+        public bool isUndoable()
+        {
+            return false;
+        }
     }
 }
