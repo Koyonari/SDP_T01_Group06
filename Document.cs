@@ -45,8 +45,13 @@ namespace SDP_T01_Group06
 			this.previouslyrejected = false;
 			this.collaborators = new List<User>();
 			this.rootsection = new DocumentSection("Document Root");
+
+            // Initialize document subject with name and state
+            getDocumentName();
             this.documentSubject = new DocumentObservable(this.documentName, this.currentState);
-            Listener ownerObserver = new Listener(owner.Name);
+
+            // Register owner as an observer
+            Listener ownerObserver = new Listener(owner);
             ownerObserver.AddDocument(this.documentSubject);
         }
 
@@ -70,13 +75,13 @@ namespace SDP_T01_Group06
 		{
 			currentState.addCollaborator(collaborator);
 
-			// Register observer
+            // Register observer for collaborators
             if (!collaborators.Contains(collaborator))
             {
                 collaborators.Add(collaborator);
 
                 // Create and register observer for the collaborator
-                Listener collaboratorObserver = new Listener(collaborator.Name);
+                Listener collaboratorObserver = new Listener(collaborator);
                 collaboratorObserver.AddDocument(this.documentSubject);
             }
         }
@@ -120,7 +125,8 @@ namespace SDP_T01_Group06
 		public void setCurrentState(DocumentState currentState)
 		{
 			this.currentState = currentState;
-		}
+            this.documentSubject.setState(currentState);
+        }
 
 		public DocumentState getCurrentState()
 		{

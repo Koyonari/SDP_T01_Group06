@@ -209,7 +209,10 @@ namespace SDP_T01_Group06
         // Notify Observer
         public void AddNotification(Notification notification)
         {
-            notifications.Add(notification);
+            if (!notifications.Contains(notification))
+            {
+                notifications.Add(notification);
+            }
         }
 
         public List<Notification> GetNotifications(bool unreadOnly = false)

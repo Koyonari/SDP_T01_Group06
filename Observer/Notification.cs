@@ -22,5 +22,19 @@
         {
             return $"[{(IsRead ? "Read" : "Unread")}] {Timestamp:g}: {Message}";
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Notification other)
+            {
+                return Message == other.Message;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Message.GetHashCode();
+        }
     }
 }
