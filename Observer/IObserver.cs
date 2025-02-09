@@ -4,6 +4,6 @@ namespace SDP_T01_Group06.Observer
 {
     public interface IObserver
     {
-        void update(string documentName, DocumentState newState);
+        public void update(string documentName, DocumentState newState);
     }
 }

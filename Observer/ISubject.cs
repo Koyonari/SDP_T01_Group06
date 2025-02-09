@@ -4,8 +4,8 @@ namespace SDP_T01_Group06.Observer
 {
     public interface ISubject
     {
-        void registerObserver(IObserver observer);
-        void removeObserver(IObserver observer);
-        void notifyObservers();
+        public void registerObserver(IObserver observer);
+        public void removeObserver(IObserver observer);
+        public void notifyObservers();
     }
 }
