@@ -281,7 +281,7 @@ namespace SDP_T01_Group06
 			Document clonedDoc = (Document)this.MemberwiseClone();
 
 			// Deep copy lists and complex objects
-			clonedDoc.collaborators = new List<User>(this.collaborators);
+            clonedDoc.collaborators = new List<User>(this.collaborators);
 			clonedDoc.rootsection = cloneSection(this.rootsection);
 			return clonedDoc;
 		}

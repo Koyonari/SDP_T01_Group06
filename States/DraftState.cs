@@ -35,7 +35,7 @@ namespace SDP_T01_Group06.States
             }
             else if (collaborator == document.Owner)
             {
-                Console.WriteLine($"{collaborator.Name} cannot be a collaborator and the owner.");
+                Console.WriteLine($"{collaborator.Name} is already the owner of the document.");
             }
             else
             {

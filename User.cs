@@ -179,6 +179,10 @@ namespace SDP_T01_Group06
         public void ListPendingDocsForReview()
         {
             DocumentIterator iterator = new PendingDocumentsIterator(this);
+            if (!iterator.HasNext())
+            {
+                Console.WriteLine($"\nYou have no documents pending for review.");
+            }
             Console.WriteLine($"\nDocuments pending review for {Name}:");
             int index = 1;
             while (iterator.HasNext())

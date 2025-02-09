@@ -117,10 +117,11 @@ namespace SDP_T01_Group06
                         .Title("Document Workflow System")
                         .PageSize(7)
                         .AddChoices(
-                            "Create a new document",
-                            "Edit existing document",
                             "View Owned documents",
                             "View Associated documents",
+                            "Create a new document",
+                            "Edit existing document",
+                            "Add Collaborator to a document",
                             "Nominate Approver for a document",
                             "Submit existing document for approval",
                             "View existing document status",
@@ -132,19 +133,22 @@ namespace SDP_T01_Group06
 
                 switch (selectedOption)
                 {
-                    case "Create a new document":
-                        CreateNewDocument(currentUser, allDocuments);
-                        break;
-                    case "Edit existing document":
-                        EditExistingDocument(currentUser);
-                        break;
                     case "View Owned documents":
                         ViewOwnedDocuments(currentUser);
                         break;
                     case "View Associated documents":
                         ViewAssociatedDocuments(currentUser);
                         break;
-                    case "View Documents Awaiting For Your Review & Approval":
+                    case "Create a new document":
+                        CreateNewDocument(currentUser, allDocuments);
+                        break;
+                    case "Edit existing document":
+                        EditExistingDocument(currentUser);
+                        break;
+                    case "Add Collaborator to a document":
+                        AddCollaborator(currentUser, allUsers);
+                        break;
+                    case "View Documents Awaiting For Your Review":
                         ViewDocumentsAwaitingForReview(currentUser);
                         break;
                     case "Nominate Approver for a document":
@@ -323,6 +327,64 @@ namespace SDP_T01_Group06
             user.ListPendingDocsForReview();
         }
 
+        static void AddCollaborator(User user, List<User> allUsers)
+        {
+            AnsiConsole.MarkupLine("[green]Add a Collaborator to a Document...[/]");
+
+            Console.WriteLine("Available documents:");
+            user.ListRelatedDocuments();
+
+            if (user.DocumentList.Count == 0)
+            {
+                Console.WriteLine("No documents available for editing.");
+                return;
+            }
+
+            int choice;
+            bool isValid;
+            do
+            {
+                Console.Write("Enter the index of the document to edit: ");
+                isValid = int.TryParse(Console.ReadLine(), out choice);
+                isValid = isValid && choice >= 1 && choice <= user.getNoOfRelatedDocuments();
+
+                if (!isValid)
+                {
+                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {user.getNoOfRelatedDocuments()}.");
+                }
+            } while (!isValid);
+
+            Document selectedDoc = user.getRelatedDocument(choice - 1);
+
+            // Display Users
+            int position = 1;
+            Console.WriteLine("Available Users:");
+            for (int i = 0; i < allUsers.Count; i++)
+            {
+                Console.WriteLine($"{position}. {allUsers[i].Name}");
+                position++;
+            }
+            Console.WriteLine();
+
+            do
+            {
+                Console.Write("Enter the user index to be your Collaborator: ");
+                isValid = int.TryParse(Console.ReadLine(), out choice);
+                isValid = isValid && choice >= 1 && choice <= allUsers.Count;
+
+                if (!isValid)
+                {
+                    Console.WriteLine($"Invalid input. Please enter a number between 1 and {allUsers.Count}.");
+                }
+            } while (!isValid);
+
+            User selectedUser = allUsers[choice - 1];
+            selectedDoc.addCollaborator(selectedUser);
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+
         static void NominateApproverForDocument(User user, List<User> allUsers)
         {
             AnsiConsole.MarkupLine("[green]Nominate An Approver For a Document...[/]");
@@ -375,7 +437,7 @@ namespace SDP_T01_Group06
             } while (!isValid);
 
             User selectedUser = allUsers[choice - 1];
-            selectedDoc.addCollaborator(selectedUser);
+            selectedDoc.nominateApprover(selectedUser);
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
