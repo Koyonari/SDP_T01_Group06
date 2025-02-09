@@ -133,7 +133,6 @@ namespace SDP_T01_Group06
 
 		public void assembleDocument()
 		{
-			getDocumentName(); // concrete operation
 			addHeader(); // concrete operation
 			createBody(); // primitive operation
 			addFooter(); // concrete operation
@@ -263,19 +262,19 @@ namespace SDP_T01_Group06
 		public void displayDocumentContent()
 		{
 			Console.WriteLine("Document Content:");
-            rootsection.display();
+			rootsection.display();
         }
 
 		protected void DisplaySections(DocumentSection section, int level)
 		{
 			Console.WriteLine($"{new string(' ', level * 2)}{level}. {section.SectionName}");
-			//foreach (DocumentComponent child in section.children)
-			//{
-			//	if (child is DocumentSection childSection)
-			//	{
-			//		DisplaySections(childSection, level + 1);
-			//	}
-			//}
+			foreach (DocumentComponent child in section.children)
+			{
+				if (child is DocumentSection childSection)
+				{
+					DisplaySections(childSection, level + 1);
+				}
+			}
 		}
 
 		public abstract void editDocument();
