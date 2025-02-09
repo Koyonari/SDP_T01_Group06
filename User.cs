@@ -180,6 +180,7 @@ namespace SDP_T01_Group06
             if (!iterator.HasNext())
             {
                 Console.WriteLine($"\nYou have no documents pending for review.");
+                return;
             }
             Console.WriteLine($"\nDocuments pending review for {Name}:");
             int index = 1;

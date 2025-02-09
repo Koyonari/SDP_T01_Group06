@@ -253,8 +253,11 @@ namespace SDP_T01_Group06
 			}
 		}
 
-
-
+		public void displayDocumentContent()
+		{
+			Console.WriteLine("Document Content:");
+            rootsection.display();
+        }
 
 		protected void DisplaySections(DocumentSection section, int level)
 		{
