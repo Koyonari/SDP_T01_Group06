@@ -217,7 +217,7 @@ namespace SDP_T01_Group06
 				{
 					// even if an item is editable, it cannot be selected as a section cos its a leaf
 					string editableMark = di.IsEditable ? "" : " (Not Editable)";
-					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content}{editableMark} (Cannot be selected as a section)");
+					Console.WriteLine($"{i + 1}. [Leaf] {di.ElementType}: {di.Content}{editableMark} (Cannot be selected as a section)");
 				}
 			}
 
