@@ -193,6 +193,9 @@ namespace SDP_T01_Group06
                     case "View existing document status":
                         ViewDocumentStatus(currentUser, documentInvoker);
                         break;
+                    case "View Documents Pending Your Approval":
+                        ViewDocumentsAwaitingForApproval(currentUser, documentInvoker);
+                        break;
                     case "Review & Approve Document":
                         ReviewDocument(currentUser, documentInvoker);
                         break;
@@ -415,6 +418,16 @@ namespace SDP_T01_Group06
             AnsiConsole.MarkupLine("[green]Viewing your documents...[/]");
             documentInvoker.executeHotKey(1);
             //user.ListRelatedDocuments();
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+
+        static void ViewDocumentsAwaitingForApproval(User user, DocumentInvoker documentInvoker)
+        {
+            // Implement the logic to view documents awaiting review
+            AnsiConsole.MarkupLine("[green]Viewing Documents Awaiting Approval...[/]");
+            documentInvoker.executeHotKey(2);
+            //user.ListPendingDocsForReview();
             Console.WriteLine();
             Console.WriteLine();
         }

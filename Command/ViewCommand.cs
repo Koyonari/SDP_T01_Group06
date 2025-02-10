@@ -32,6 +32,7 @@ namespace SDP_T01_Group06.Command
             }
             else if (documentType == "Status")
             {
+                Console.WriteLine("4");
                 user.ListRelatedDocumentStatus();
             }
         }
