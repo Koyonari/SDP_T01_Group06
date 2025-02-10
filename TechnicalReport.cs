@@ -59,6 +59,7 @@ namespace SDP_T01_Group06
             codeSection.add(new DocumentItem(code, "Code"));
             var mainContent = rootsection.getChild(1); // get body section to add component in
             mainContent.add(codeSection);
-        }
+			Console.WriteLine("Code Snippet added to document");
+		}
     }
 }
