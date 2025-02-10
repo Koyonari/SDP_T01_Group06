@@ -71,38 +71,21 @@ namespace SDP_T01_Group06
 			currentState.edit();
 		}
 
-		public void addCollaborator(User collaborator)
+        public void addCollaborator(User collaborator)
         {
-            // Check if the collaborator exists by comparing names since that's the unique identifier
-            bool isExistingCollaborator = collaborators.Any(c => c.Name.Equals(collaborator.Name, StringComparison.OrdinalIgnoreCase));
+            // Let the state handle the actual collaborator management
+            currentState.addCollaborator(collaborator);
 
-            if (!isExistingCollaborator && this.owner.Name != collaborator.Name)
+            // Only set up the observer pattern if the collaborator was successfully added
+            if (collaborators.Any(c => c.Name.Equals(collaborator.Name, StringComparison.OrdinalIgnoreCase)))
             {
-                collaborators.Add(collaborator);
-                if (!collaborator.DocumentList.Contains(this))
-                {
-                    collaborator.DocumentList.Add(this);
-                }
-
                 // Register the collaborator as an observer
                 Listener collaboratorObserver = new Listener(collaborator);
                 collaboratorObserver.AddDocument(this.documentSubject);
-
-                // Notify current state
-                currentState.addCollaborator(collaborator);
-                Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
-            }
-            else if (isExistingCollaborator)
-            {
-                Console.WriteLine($"{collaborator.Name} is already a collaborator.");
-            }
-            else
-            {
-                Console.WriteLine($"{collaborator.Name} cannot be added as a collaborator (document owner).");
             }
         }
 
-		public void nominateApprover(User approver)
+        public void nominateApprover(User approver)
 		{
 			currentState.nominateApprover(approver);
 		}
