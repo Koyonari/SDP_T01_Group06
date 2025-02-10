@@ -71,38 +71,21 @@ namespace SDP_T01_Group06
 			currentState.edit();
 		}
 
-		public void addCollaborator(User collaborator)
+        public void addCollaborator(User collaborator)
         {
-            // Check if the collaborator exists by comparing names since that's the unique identifier
-            bool isExistingCollaborator = collaborators.Any(c => c.Name.Equals(collaborator.Name, StringComparison.OrdinalIgnoreCase));
+            // Let the state handle the actual collaborator management
+            currentState.addCollaborator(collaborator);
 
-            if (!isExistingCollaborator && this.owner.Name != collaborator.Name)
+            // Only set up the observer pattern if the collaborator was successfully added
+            if (collaborators.Any(c => c.Name.Equals(collaborator.Name, StringComparison.OrdinalIgnoreCase)))
             {
-                collaborators.Add(collaborator);
-                if (!collaborator.DocumentList.Contains(this))
-                {
-                    collaborator.DocumentList.Add(this);
-                }
-
                 // Register the collaborator as an observer
                 Listener collaboratorObserver = new Listener(collaborator);
                 collaboratorObserver.AddDocument(this.documentSubject);
-
-                // Notify current state
-                currentState.addCollaborator(collaborator);
-                Console.WriteLine($"{collaborator.Name} has been added as a collaborator.");
-            }
-            else if (isExistingCollaborator)
-            {
-                Console.WriteLine($"{collaborator.Name} is already a collaborator.");
-            }
-            else
-            {
-                Console.WriteLine($"{collaborator.Name} cannot be added as a collaborator (document owner).");
             }
         }
 
-		public void nominateApprover(User approver)
+        public void nominateApprover(User approver)
 		{
 			currentState.nominateApprover(approver);
 		}
@@ -226,13 +209,13 @@ namespace SDP_T01_Group06
 				DocumentComponent comp = section.children[i];
 				if (comp is DocumentSection ds)
 				{
-					// Show whether the section is editable.
+					// show whether the section is editable to tell users if they can select it for editing or not
 					string editableMark = ds.IsEditable ? "" : " (Not Editable)";
 					Console.WriteLine($"{i + 1}. Section: {ds.SectionName}{editableMark}");
 				}
 				else if (comp is DocumentItem di)
 				{
-					// Even if an item is editable, it cannot be selected as a section.
+					// even if an item is editable, it cannot be selected as a section cos its a leaf
 					string editableMark = di.IsEditable ? "" : " (Not Editable)";
 					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content}{editableMark} (Cannot be selected as a section)");
 				}
@@ -263,7 +246,7 @@ namespace SDP_T01_Group06
 					return;
 				}
 
-				// Validate choice range
+				// validate choice range
 				if (choice < 1 || choice > section.children.Count)
 				{
 					Console.WriteLine($"Invalid selection. Please enter a number between 0 and {section.children.Count}.");
@@ -272,14 +255,14 @@ namespace SDP_T01_Group06
 
 				DocumentComponent selected = section.children[choice - 1];
 
-				// Prevent selecting a leaf node (DocumentItem) as a section.
+				// prevent selecting a leaf node (DocumentItem) as a section as it has no children
 				if (selected is DocumentItem item)
 				{
 					Console.WriteLine($"Error: '{item.Content}' is an item and cannot be selected as a section.");
 					continue;
 				}
 
-				// Handle section selection (only DocumentSections can be navigated into)
+				// when documentsection is correctly selected (only DocumentSections can be navigated into)
 				if (selected is DocumentSection childSection)
 				{
 					if (!childSection.IsEditable)
@@ -287,12 +270,12 @@ namespace SDP_T01_Group06
 						Console.WriteLine($"Error: Section '{childSection.SectionName}' is not editable.");
 						continue;
 					}
-					// Recursively navigate into the editable section.
+					// recursively call the function again
 					selectSection(childSection, level + 1);
 					return;
 				}
 
-				Console.WriteLine("Selected component type is not supported."); // Fallback error
+				Console.WriteLine("Selected component type is not supported."); // in case of error
 				return;
 			}
 		}

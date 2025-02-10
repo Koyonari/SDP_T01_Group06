@@ -604,8 +604,16 @@ namespace SDP_T01_Group06
 
             // Show Pending Documents
             Console.WriteLine("\nDocuments To Review:");
-            documentInvoker.executeHotKey(2);
+//             documentInvoker.executeHotKey(2);
             //user.ListPendingDocsForReview();
+
+            if (user.getNoOfPendingDocuments() == 0)
+            {
+                AnsiConsole.MarkupLine("[red]You have no documents pending for review.[/]\n\n");
+                return;
+            }
+            documentInvoker.executeHotKey(2);
+//             user.ListPendingDocsForReview();
 
             // Get the user’s choice of document
             int choice;
