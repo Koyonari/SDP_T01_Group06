@@ -226,13 +226,13 @@ namespace SDP_T01_Group06
 				DocumentComponent comp = section.children[i];
 				if (comp is DocumentSection ds)
 				{
-					// Show whether the section is editable.
+					// show whether the section is editable to tell users if they can select it for editing or not
 					string editableMark = ds.IsEditable ? "" : " (Not Editable)";
 					Console.WriteLine($"{i + 1}. Section: {ds.SectionName}{editableMark}");
 				}
 				else if (comp is DocumentItem di)
 				{
-					// Even if an item is editable, it cannot be selected as a section.
+					// even if an item is editable, it cannot be selected as a section cos its a leaf
 					string editableMark = di.IsEditable ? "" : " (Not Editable)";
 					Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content}{editableMark} (Cannot be selected as a section)");
 				}
@@ -263,7 +263,7 @@ namespace SDP_T01_Group06
 					return;
 				}
 
-				// Validate choice range
+				// validate choice range
 				if (choice < 1 || choice > section.children.Count)
 				{
 					Console.WriteLine($"Invalid selection. Please enter a number between 0 and {section.children.Count}.");
@@ -272,14 +272,14 @@ namespace SDP_T01_Group06
 
 				DocumentComponent selected = section.children[choice - 1];
 
-				// Prevent selecting a leaf node (DocumentItem) as a section.
+				// prevent selecting a leaf node (DocumentItem) as a section as it has no children
 				if (selected is DocumentItem item)
 				{
 					Console.WriteLine($"Error: '{item.Content}' is an item and cannot be selected as a section.");
 					continue;
 				}
 
-				// Handle section selection (only DocumentSections can be navigated into)
+				// when documentsection is correctly selected (only DocumentSections can be navigated into)
 				if (selected is DocumentSection childSection)
 				{
 					if (!childSection.IsEditable)
@@ -287,12 +287,12 @@ namespace SDP_T01_Group06
 						Console.WriteLine($"Error: Section '{childSection.SectionName}' is not editable.");
 						continue;
 					}
-					// Recursively navigate into the editable section.
+					// recursively call the function again
 					selectSection(childSection, level + 1);
 					return;
 				}
 
-				Console.WriteLine("Selected component type is not supported."); // Fallback error
+				Console.WriteLine("Selected component type is not supported."); // in case of error
 				return;
 			}
 		}
