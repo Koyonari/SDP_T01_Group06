@@ -59,16 +59,21 @@ namespace SDP_T01_Group06.States
 
         public void submitForApproval(User submitter)
         {
-            if (document.hasApprover())
+            if (document.hasApprover() && 
+                (!document.previouslyRejected || (document.previouslyRejected && document.isEdited)))
             {
                 Console.WriteLine("Document submitted for approval.");
                 document.setCurrentState(new UnderReviewState(document));
                 document.Approver.AddDocument(document);
                 document.Submitter = submitter;
             }
-            else
+            else if (!document.hasApprover())
             {
                 Console.WriteLine("Document cannot be submitted without an approver.");
+            }
+            else if (document.previouslyRejected && !document.isEdited)
+            {
+                Console.WriteLine("Rejected Document cannot be submitted without editing it.");
             }
         }
 
