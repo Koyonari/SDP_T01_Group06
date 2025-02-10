@@ -542,7 +542,7 @@ namespace SDP_T01_Group06
 
             // Show Pending Documents
             Console.WriteLine("\nDocuments To Review:");
-            if (user.getNoOfOwnedDocuments() == 0)
+            if (user.getNoOfPendingDocuments() == 0)
             {
                 AnsiConsole.MarkupLine("[red]You have no documents pending for review.[/]\n\n");
                 return;
