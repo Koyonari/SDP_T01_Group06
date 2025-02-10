@@ -6,7 +6,7 @@ using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06
 {
-    public class User : DocumentAggregate
+    public class User 
     {
         public string Name { get; set; }
 
