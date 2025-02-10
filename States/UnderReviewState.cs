@@ -57,7 +57,7 @@ namespace SDP_T01_Group06.States
             Console.WriteLine("Document pushed back with comment: " + comment);
             document.setCurrentState(new DraftState(document));
             document.previouslyRejected = false;
-            document.Approver.DocumentList.Remove(document);
+            //document.Approver.DocumentList.Remove(document);
         }
 
         public void approve()
@@ -74,7 +74,7 @@ namespace SDP_T01_Group06.States
             document.setCurrentState(new DraftState(document));
             document.previouslyRejected = true;
             document.isEdited = false;
-            document.Approver.DocumentList.Remove(document);
+            //document.Approver.DocumentList.Remove(document);
         }
 
         public void resumeEditing()
