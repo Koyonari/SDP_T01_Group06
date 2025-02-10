@@ -1,4 +1,5 @@
 ﻿using SDP_T01_Group06.Composite;
+using SDP_T01_Group06.Memento;
 using SDP_T01_Group06.Observer;
 using SDP_T01_Group06.States;
 
@@ -347,5 +348,25 @@ namespace SDP_T01_Group06
 			return newSection;
 		}
 
-	}
+		public DocumentMemento createMemento()
+		{
+            return new DocumentMemento(this.clone());
+        }
+
+		public void restoreFromMemento(DocumentMemento memento)
+        {
+            Document restoredDoc = memento.getSavedState();
+            this.documentID = restoredDoc.documentID;
+            this.documentName = restoredDoc.documentName;
+            this.owner = restoredDoc.owner;
+            this.collaborators = restoredDoc.collaborators;
+            this.approver = restoredDoc.approver;
+            this.submitter = restoredDoc.submitter;
+            this.previouslyrejected = restoredDoc.previouslyrejected;
+            this.isedited = restoredDoc.isedited;
+            this.rootsection = restoredDoc.rootsection;
+            this.currentSection = restoredDoc.currentSection;
+            this.currentState = restoredDoc.currentState;
+            this.documentSubject = restoredDoc.documentSubject;
+        }
 }
