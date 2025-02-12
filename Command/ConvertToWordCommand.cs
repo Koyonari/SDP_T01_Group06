@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SDP_T01_Group06.Converter;
-using SDP_T01_Group06.Strategy;
+﻿using SDP_T01_Group06.Converter;
 
 namespace SDP_T01_Group06.Command
 {
@@ -13,19 +7,17 @@ namespace SDP_T01_Group06.Command
         private User user;
         private Document document;
         private IDocumentConverter strategy;
-        private DocumentConverter documentConverter;
         public ConvertToWordCommand(User user, Document document, IDocumentConverter strategy)
         {
             this.user = user;
             this.document = document;
             this.strategy = strategy;
-            documentConverter = new DocumentConverter();
         }
 
         public void execute()
         {
-            documentConverter.SetStrategy(strategy);
-            document = documentConverter.convert(document);
+            document.setConversionStrategy(strategy);
+            document = document.convert();
         }
 
         public void undo() { }

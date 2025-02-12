@@ -1,7 +1,6 @@
 using SDP_T01_Group06.Converter;
 using SDP_T01_Group06.Factory;
 using SDP_T01_Group06.Iterator;
-using SDP_T01_Group06.Strategy;
 using SDP_T01_Group06.Command;
 using Spectre.Console;
 
@@ -671,102 +670,93 @@ namespace SDP_T01_Group06
 
         static void ConvertDocument(User user, List<Document> allDocuments, DocumentInvoker documentInvoker)
         {
-
+            // Display available documents using existing command
+            AnsiConsole.MarkupLine("[green]Converting a document...[/]");
             documentInvoker.executeHotKey(1);
-            //user.ListRelatedDocuments();
 
-            // Display available documents
-            //DocumentIterator iterator = new AssociatedDocumentsIterator(user);
-            //List<Document> availableDocs = new List<Document>();
+            // Get associated documents
+            List<Document> associatedDocs = user.DocumentList
+                .Where(doc => doc.Owner == user || doc.Collaborators.Contains(user))
+                .ToList();
 
-            // Get only the documents the user is associated with
-            List<Document> associatedDocs = new List<Document>();
-            foreach (Document doc in user.DocumentList)
-            {
-                if (doc.Owner == user || doc.Collaborators.Contains(user))
-                {
-                    associatedDocs.Add(doc);
-                }
-            }
-
-            if (associatedDocs.Count == 0)
+            if (!associatedDocs.Any())
             {
                 AnsiConsole.MarkupLine("[red]No documents available for conversion.[/]");
                 return;
             }
 
-            AnsiConsole.MarkupLine("\n[blue]Available documents for conversion:[/]");
+            // Display documents in a table
+            var table = new Table()
+                .AddColumn(new TableColumn("Number").Centered())
+                .AddColumn(new TableColumn("Document Name"))
+                .AddColumn(new TableColumn("Owner"));
 
-            var table = new Table();
-            table.AddColumn(new TableColumn("Number").Centered());
-            table.AddColumn(new TableColumn("Document Name"));
-
-            // Add only associated documents to the table
             for (int i = 0; i < associatedDocs.Count; i++)
             {
-                table.AddRow((i + 1).ToString(), associatedDocs[i].DocumentName);
+                table.AddRow(
+                    (i + 1).ToString(),
+                    associatedDocs[i].DocumentName,
+                    associatedDocs[i].Owner.Name
+                );
             }
 
             AnsiConsole.Write(table);
 
-            // Select document using AnsiConsole prompt
+            // Get document selection
             var docChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<int>()
                     .Title("Select a document to convert:")
                     .AddChoices(Enumerable.Range(1, associatedDocs.Count))
-                    .UseConverter(i => $"{i}. {associatedDocs[i - 1].DocumentName}"));
+                    .UseConverter(i => $"{i}. {associatedDocs[i - 1].DocumentName}")
+            );
 
-            // Select conversion format using AnsiConsole prompt
+            Document selectedDoc = associatedDocs[docChoice - 1];
+
+            // Get format selection
             var formatChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("Select conversion format:")
-                    .AddChoices(new[] { "Word", "PDF" }));
-
-            var converter = new DocumentConverter(); // Will use PDF by default
-
-            //var converter = new DocumentConverter();
-            Document chosenDoc = associatedDocs[docChoice - 1];
-
-            // Declare a variable to hold the conversion command
-            IResultCommand conversionCommand = null;
-
-            // Set conversion strategy based on selection
-            if (formatChoice == "Word")
-            {
-                //converter.SetStrategy(new WordConverter());
-                WordConverter wordConverter = new WordConverter();
-                conversionCommand = new ConvertToWordCommand(user, chosenDoc, wordConverter);
-                documentInvoker.setCommand(conversionCommand);
-            }
-            else if (formatChoice == "PDF")
-            {
-                converter.SetStrategy(new PDFConverter());
-                PDFConverter pdfConverter = new PDFConverter();
-                conversionCommand = new ConvertToPDFCommand(user, chosenDoc, pdfConverter);
-                documentInvoker.setCommand(conversionCommand);
-                //converter.SetStrategy(new PDFConverter());
-            }
+                    .AddChoices(new[] { "PDF", "Word" })
+            );
 
             try
             {
-                // Show spinner during conversion
+                // Create appropriate command based on format choice
+                IResultCommand conversionCommand = formatChoice switch
+                {
+                    "PDF" => new ConvertToPDFCommand(user, selectedDoc, new PDFConverter()),
+                    "Word" => new ConvertToWordCommand(user, selectedDoc, new WordConverter()),
+                    _ => throw new ArgumentException("Unsupported format selected")
+                };
+
+                // Execute conversion with progress indicator
                 var convertedDoc = AnsiConsole.Status()
+                    .Spinner(Spinner.Known.Dots)
+                    .SpinnerStyle(Style.Parse("green"))
                     .Start("Converting document...", ctx =>
                     {
-                        ctx.Spinner(Spinner.Known.Dots);
-                        ctx.SpinnerStyle(Style.Parse("green"));
+                        documentInvoker.setCommand(conversionCommand);
                         documentInvoker.executeCommand();
                         return conversionCommand.getResult();
-                        //return converter.convert(user.DocumentList[docChoice - 1]);
                     });
 
+                // Add converted document to collections
                 user.AddDocument(convertedDoc);
                 allDocuments.Add(convertedDoc);
-                AnsiConsole.MarkupLine($"\n[green]Document converted successfully:[/] {convertedDoc.DocumentName}");
+
+                AnsiConsole.MarkupLine($"[green]Success![/] Document converted to {formatChoice}: {convertedDoc.DocumentName}");
+            }
+            catch (ArgumentException ex)
+            {
+                AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                AnsiConsole.MarkupLine($"[red]Conversion error:[/] {ex.Message}");
             }
             catch (Exception ex)
             {
-                AnsiConsole.MarkupLine($"\n[red]Error converting document:[/] {ex.Message}");
+                AnsiConsole.MarkupLine($"[red]Unexpected error during conversion:[/] {ex.Message}");
             }
         }
     }

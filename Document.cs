@@ -1,4 +1,5 @@
 ﻿using SDP_T01_Group06.Composite;
+using SDP_T01_Group06.Converter;
 using SDP_T01_Group06.Observer;
 using SDP_T01_Group06.States;
 
@@ -18,6 +19,7 @@ namespace SDP_T01_Group06
         protected DocumentSection rootsection;
         protected DocumentSection currentSection;
         private List<IObserver> observers;
+        private IDocumentConverter conversionStrategy; 
 
         public Guid DocumentID
         {
@@ -57,7 +59,7 @@ namespace SDP_T01_Group06
             return approver != null;
         }
 
-        // ISubject implementation
+        // ------------Observer Design Pattern------------
         public void registerObserver(IObserver observer)
         {
             if (!observers.Contains(observer))
@@ -79,7 +81,7 @@ namespace SDP_T01_Group06
             }
         }
 
-        // Modified setState method
+
         public void setState(DocumentState state)
         {
             var oldState = currentState;
@@ -92,7 +94,8 @@ namespace SDP_T01_Group06
             }
         }
 
-        // Modified addCollaborator method
+        // -----------------------------------------
+
         public void addCollaborator(User collaborator)
         {
             // Let the state handle the actual collaborator management
@@ -322,6 +325,21 @@ namespace SDP_T01_Group06
 
         public abstract void createBody();
 
+        // ----------------Strategy Design Pattern----------------
+        public void setConversionStrategy(IDocumentConverter strategy)
+        {
+            conversionStrategy = strategy;
+        }
+
+        public Document convert()
+        {
+            if (conversionStrategy == null)
+            {
+                throw new InvalidOperationException("No conversion strategy set");
+            }
+            return conversionStrategy.convert(this);
+        }
+
         public Document clone()
         {
             Document clonedDoc = (Document)this.MemberwiseClone();
@@ -347,5 +365,6 @@ namespace SDP_T01_Group06
             }
             return newSection;
         }
+        // -----------------------------------------
     }
 }
