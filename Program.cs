@@ -725,7 +725,7 @@ namespace SDP_T01_Group06
             var converter = new DocumentConverter(); // Will use PDF by default
 
             //var converter = new DocumentConverter();
-            Document chosenDoc = user.DocumentList[docChoice - 1];
+            Document chosenDoc = associatedDocs[docChoice - 1];
 
             // Declare a variable to hold the conversion command
             IResultCommand conversionCommand = null;
