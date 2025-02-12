@@ -128,27 +128,31 @@ namespace SDP_T01_Group06
             //ViewCommand viewCommand = new ViewCommand(currentUser);
             //NominateApproverCommand nominateApproverCommand = new NominateApproverCommand(currentUser, allUsers);
             //SubmitForApprovalCommand submitForApprovalCommand = new SubmitForApprovalCommand(currentUser);
-
-
             Console.Clear();
             AnsiConsole.Write(
-               new FigletText("Document Workflow System")
-                   .LeftJustified()
-                   .Color(Color.Blue));
-
-            // Show unread notifications count if any exist
-            var unreadNotifications = currentUser.GetNotifications(unreadOnly: true);
-            if (unreadNotifications.Any())
-            {
-                AnsiConsole.MarkupLine($"[yellow]You have {unreadNotifications.Count} unread notifications![/]");
-            }
-
+                new FigletText("Document Workflow System")
+                    .LeftJustified()
+                    .Color(Color.Blue));
+            AnsiConsole.MarkupLine($"[green]Logged in as {currentUser.Name}[/]"); // Show unread notifications count if any exist
+                
             while (true)
             {
+                var unreadNotifications = currentUser.GetNotifications(unreadOnly: true);
+                if (unreadNotifications.Any())
+                {
+                    Console.WriteLine();
+                    AnsiConsole.MarkupLine($"[yellow]You have {unreadNotifications.Count} unread notifications![/]");
+                }
+                else
+                {
+                    Console.WriteLine();
+                    AnsiConsole.MarkupLine($"[green]You have no unread notifications.[/]");
+                }
+
                 var selectedOption = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Document Workflow System")
-                        .PageSize(7)
+                        .PageSize(10)
                         .AddChoices(
                             "View Owned documents",
                             "View Associated documents",
@@ -213,6 +217,7 @@ namespace SDP_T01_Group06
                 }
             }
         }
+
         static void CreateNewUser(List<User> users)
         {
             Console.Write("Enter new User's name: ");
@@ -264,6 +269,7 @@ namespace SDP_T01_Group06
             if (!notifications.Any())
             {
                 AnsiConsole.MarkupLine("[yellow]No notifications to display.[/]");
+                Console.WriteLine();
                 return;
             }
 
@@ -285,10 +291,17 @@ namespace SDP_T01_Group06
 
             if (user.GetNotifications(unreadOnly: true).Any())
             {
-                if (AnsiConsole.Confirm("Mark all notifications as read?"))
+                var response = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                    .Title("Mark all notifications as read?")
+                    .AddChoices("Yes", "No")
+                );
+
+                if (response == "Yes")
                 {
                     user.MarkAllNotificationsAsRead();
-                    AnsiConsole.MarkupLine("[green]All notifications marked as read.[/]");
+                    AnsiConsole.MarkupLine("[yellow]All notifications marked as read.[/]");
+                    Console.WriteLine();
                 }
             }
         }
@@ -647,6 +660,7 @@ namespace SDP_T01_Group06
                     documentInvoker.setCommand(approveCommand);
                     documentInvoker.executeCommand();
                     //selectedDoc.approve();
+                    AnsiConsole.WriteLine("Notified all collaborators. Document Approved Successfully!", new Style(Color.Green));
                     break;
 
                 case "Pushback with Comment":
@@ -655,6 +669,7 @@ namespace SDP_T01_Group06
                     documentInvoker.setCommand(pushBackCommand);
                     documentInvoker.executeCommand();
                     //selectedDoc.pushBack(comment);
+                    AnsiConsole.WriteLine("Notified all collaborators. Document Pushbacked Successfully!", new Style(Color.Green));
                     break;
 
                 case "Reject":
@@ -662,6 +677,7 @@ namespace SDP_T01_Group06
                     documentInvoker.setCommand(rejectCommand);
                     documentInvoker.executeCommand();
                     //selectedDoc.reject();
+                    AnsiConsole.WriteLine("Notified all collaborators. Document Rejected Successfully!", new Style(Color.Green));
                     break;
             }
 
