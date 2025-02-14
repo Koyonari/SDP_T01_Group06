@@ -1,19 +1,42 @@
 ﻿using SDP_T01_Group06.Composite;
+using SDP_T01_Group06.Memento;
 
 namespace SDP_T01_Group06
 {
     public class GrantProposal : Document
 	{
+
         public GrantProposal(User owner) : base(owner)
         {
         }
         public override void editDocument()
         {
-            bool validOption = false; // Flag to control the loop
-
-            while (!validOption) // Loop until a valid option is entered
+            bool validOption = false;
+            while (!validOption)
             {
-                selectSection(rootsection, 1);
+                //Console.WriteLine("\n=== Current Document State ===");
+                //Console.WriteLine($"Root section children count: {rootsection.children.Count}");
+                //Console.WriteLine($"Current section: {(currentSection?.SectionName ?? "null")}");
+                //if (currentSection != null)
+                //{
+                //    Console.WriteLine("Current section children:");
+                //    foreach (var child in currentSection.children)
+                //    {
+                //        if (child is DocumentSection ds)
+                //            Console.WriteLine($"- Section: {ds.SectionName}");
+                //        else if (child is DocumentItem di)
+                //            Console.WriteLine($"- Item: {di.Content}");
+                //    }
+                //}
+                //Console.WriteLine($"History count: {history.GetMementos().Count}");
+                //Console.WriteLine("========================\n");
+
+                bool exit = selectSection(rootsection, 1);
+                if (exit)
+                {
+                    validOption = true;
+                    return;
+                }
                 Console.WriteLine("What would you like to do?: ");
                 Console.WriteLine("1. Add paragraph");
                 Console.WriteLine("2. Add budget breakdown");
@@ -23,18 +46,37 @@ namespace SDP_T01_Group06
                 switch (option)
                 {
                     case "1":
+                        //Console.WriteLine("\n=== Before Creating Paragraph Memento ===");
+                        DocumentMemento pSnapshot = createMemento();
+                        //Console.WriteLine($"Memento created with root children count: {pSnapshot.RootSectionClone.children.Count}");
+                        history.AddMemento(pSnapshot);
+
+                        //Console.WriteLine("\n=== Adding Paragraph ===");
                         addParagraph();
-                        validOption = true; // Set flag to true to exit the loop
+
+                        //Console.WriteLine("\n=== After Adding Paragraph ===");
+                        //Console.WriteLine($"Current section children count: {currentSection.children.Count}");
                         break;
+
                     case "2":
+                        //Console.WriteLine("\n=== Before Creating Budget Memento ===");
+                        DocumentMemento bSnapshot = createMemento();
+                        //Console.WriteLine($"Memento created with root children count: {bSnapshot.RootSectionClone.children.Count}");
+                        history.AddMemento(bSnapshot);
+
+                        //Console.WriteLine("\n=== Adding Budget ===");
                         addBudgetBreakdown();
-                        validOption = true; // Set flag to true to exit the loop
+
+                        //Console.WriteLine("\n=== After Adding Budget ===");
+                        //Console.WriteLine($"Current section children count: {currentSection.children.Count}");
                         break;
+
                     case "0":
-                        return; // Exit the entire editDocument function
+                        validOption = true;
+                        break;
                     default:
                         Console.WriteLine("Invalid option.");
-                        break; // Loop continues because validOption is still false
+                        break;
                 }
             }
         }
@@ -57,5 +99,14 @@ namespace SDP_T01_Group06
             mainContent.add(budgetSection);
 			Console.WriteLine("Budget Breakdown added to document");
 		}
+
+        //public override DocumentMemento createMemento()
+        //{
+        //    //Console.WriteLine("In gp.cs:" + this.rootsection.SectionName);
+        //    DocumentSection rootSectionClone = this.rootsection?.Clone() as DocumentSection;
+        //    //Console.WriteLine("in gp.cs222: "+rootSectionClone.SectionName);
+        //    DocumentSection currentSectionClone = this.currentSection?.Clone() as DocumentSection;
+        //    return new DocumentMemento(this.documentName, rootSectionClone, currentSectionClone, this.currentState, isEdited);
+        //}
     }
 }

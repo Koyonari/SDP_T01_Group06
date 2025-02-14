@@ -1,4 +1,5 @@
 ﻿using SDP_T01_Group06.Composite;
+using SDP_T01_Group06.Memento;
 
 namespace SDP_T01_Group06
 {
@@ -16,7 +17,12 @@ namespace SDP_T01_Group06
 
             while (!validOption)
             {
-                selectSection(rootsection, 1);
+                bool exit = selectSection(rootsection, 1);
+                if (exit)
+                {
+                    validOption = true;
+                    return;
+                }
                 Console.WriteLine("What would you like to do?: ");
                 Console.WriteLine("1. Add paragraph");
                 Console.WriteLine("2. Add code snippet");
@@ -27,15 +33,18 @@ namespace SDP_T01_Group06
                 switch (option)
                 {
                     case "1":
+                        DocumentMemento pSnapshot = createMemento();
+                        history.AddMemento(pSnapshot);
                         addParagraph();
-                        validOption = true;
                         break;
                     case "2":
+                        DocumentMemento bSnapshot = createMemento();
+                        history.AddMemento(bSnapshot);
                         addCodeSnippet();
-                        validOption = true;
                         break;
                     case "0":
-                        return;
+                        validOption = true;
+                        break;
                     default:
                         Console.WriteLine("Invalid option.");
                         break;
@@ -61,5 +70,12 @@ namespace SDP_T01_Group06
             mainContent.add(codeSection);
 			Console.WriteLine("Code Snippet added to document");
 		}
+
+        //public override DocumentMemento createMemento()
+        //{
+        //    DocumentSection rootSectionClone = this.rootsection?.Clone() as DocumentSection;
+        //    DocumentSection currentSectionClone = this.currentSection?.Clone() as DocumentSection;
+        //    return new DocumentMemento(this.documentName, rootSectionClone, currentSectionClone, this.currentState, isEdited);
+        //}
     }
 }

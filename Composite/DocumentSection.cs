@@ -59,5 +59,32 @@ namespace SDP_T01_Group06.Composite
                 return string.Join("\n", children.Select(c => c.Content));
             }
         }
+
+        // Memento
+        //public override DocumentComponent Clone()
+        //{
+        //    DocumentSection clone = new DocumentSection(this.sectionName, this.isEditable);
+        //    foreach (var child in this.children)
+        //    {
+        //        clone.children.Add(child.Clone()); // Deep copy of each child
+        //    }
+        //    return clone;
+        //}
+
+        public override DocumentComponent Clone()
+        {
+            // Create a new instance for this section.
+            DocumentSection clone = new DocumentSection(this.SectionName, this.IsEditable);
+
+            // Deep clone each child.
+            foreach (DocumentComponent child in this.children)
+            {
+                DocumentComponent childClone = child.Clone();
+                clone.children.Add(childClone);
+                //Console.WriteLine("Childcloned" + childClone.ToString());
+            }
+            return clone;
+        }
+
     }
 }

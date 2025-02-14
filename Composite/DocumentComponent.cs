@@ -38,5 +38,10 @@ namespace SDP_T01_Group06.Composite
         {
             get { throw new NotSupportedException(); }
         }
+
+        public virtual DocumentComponent Clone()
+        {
+            throw new NotSupportedException();
+        }
     }
 }

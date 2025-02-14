@@ -33,5 +33,11 @@ namespace SDP_T01_Group06.Composite
         {
             Console.WriteLine($"{elementType}: {content}");
         }
+
+        // Memento
+        public override DocumentComponent Clone()
+        {
+            return new DocumentItem(this.content, this.elementType, this.isEditable);
+        }
     }
 }
