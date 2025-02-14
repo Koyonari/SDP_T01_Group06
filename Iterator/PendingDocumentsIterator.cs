@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SDP_T01_Group06.States;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace SDP_T01_Group06.Iterator
         {
             while (index < documents.Count)
             {
-                if (documents[index].Approver == user)
+                if (documents[index].Approver == user && documents[index].getCurrentState() is UnderReviewState)
                     return true;
                 index++;
             }

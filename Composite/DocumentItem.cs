@@ -29,7 +29,12 @@ namespace SDP_T01_Group06.Composite
             get { return isEditable; }
         }
 
-        public override void display()
+		public string ElementType
+		{
+			get { return elementType; }
+		}
+
+		public override void display()
         {
             Console.WriteLine($"{elementType}: {content}");
         }

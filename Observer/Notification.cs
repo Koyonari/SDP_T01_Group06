@@ -1,4 +1,6 @@
-﻿namespace SDP_T01_Group06.Observer
+﻿
+// Notification.cs
+namespace SDP_T01_Group06.Observer
 {
     public class Notification
     {

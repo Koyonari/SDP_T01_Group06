@@ -6,7 +6,7 @@ using SDP_T01_Group06.States;
 
 namespace SDP_T01_Group06
 {
-    public class User 
+    public class User : IObserver
     {
         public string Name { get; set; }
 
@@ -24,6 +24,7 @@ namespace SDP_T01_Group06
             set { documentList = value; }
         }
         private List<Notification> notifications;
+        private List<Document> observedDocuments;
 
         public User(string name)
         {
@@ -31,10 +32,39 @@ namespace SDP_T01_Group06
             Name = name;
             DocumentList = new List<Document>();
             notifications = new List<Notification>();
+            observedDocuments = new List<Document>();
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return Name;
+        }
+
+        // IObserver implementation
+        public void update(string documentName, DocumentState newState)
+        {
+            string stateChange = newState.GetType().Name.Replace("State", "");
+            string message = $"Document '{documentName}' has changed to {stateChange} state";
+            AddNotification(new Notification(message));
+        }
+
+        // Document observation methods
+        public void ObserveDocument(Document document)
+        {
+            if (!observedDocuments.Contains(document))
+            {
+                observedDocuments.Add(document);
+                document.registerObserver(this);
+            }
+        }
+
+        public void StopObservingDocument(Document document)
+        {
+            if (observedDocuments.Contains(document))
+            {
+                observedDocuments.Remove(document);
+                document.removeObserver(this);
+            }
         }
 
         public Document CreateDocument(DocumentFactory factory)
@@ -62,7 +92,7 @@ namespace SDP_T01_Group06
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), "No document at the given index.");
                 }
-                iterator.Next(); // Move to the next document
+                iterator.Next();
             }
 
             if (!iterator.HasNext())
@@ -70,15 +100,14 @@ namespace SDP_T01_Group06
                 throw new ArgumentOutOfRangeException(nameof(index), "No document at the given index.");
             }
 
-            return iterator.Next(); // Return the document at the correct index
+            return iterator.Next();
         }
-
 
         public Document getPendingDocument(int index)
         {
             DocumentIterator iterator = new PendingDocumentsIterator(this);
 
-            for (int i = 0; i < index; i++) // Iterate to position-1
+            for (int i = 0; i < index; i++)
             {
                 if (!iterator.HasNext())
                 {
@@ -98,8 +127,8 @@ namespace SDP_T01_Group06
         public void removeDocument(Document doc)
         {
             documentList.Remove(doc);
+            StopObservingDocument(doc);
         }
-
 
         public int getNoOfOwnedDocuments()
         {
@@ -146,7 +175,7 @@ namespace SDP_T01_Group06
             while (iterator.HasNext())
             {
                 Document doc = iterator.Next();
-                string stateName = doc.getCurrentState().GetType().Name; // Get class name of the state
+                string stateName = doc.getCurrentState().GetType().Name;
                 Console.WriteLine($"{index}. {doc.DocumentName} - {stateName}");
                 index++;
             }
@@ -177,6 +206,7 @@ namespace SDP_T01_Group06
                 index++;
             }
         }
+
         public void ListPendingDocsForReview()
         {
             DocumentIterator iterator = new PendingDocumentsIterator(this);
@@ -209,7 +239,7 @@ namespace SDP_T01_Group06
             throw new ArgumentException("Invalid iterator type");
         }
 
-        // Notify Observer
+        // Notification methods
         public void AddNotification(Notification notification)
         {
             if (!notifications.Contains(notification))
