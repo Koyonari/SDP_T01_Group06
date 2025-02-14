@@ -35,8 +35,6 @@ namespace SDP_T01_Group06
                         addCodeSnippet();
                         validOption = true;
                         break;
-                    case "0":
-                        return;
                     default:
                         Console.WriteLine("Invalid option.");
                         break;

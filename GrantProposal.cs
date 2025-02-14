@@ -32,8 +32,6 @@ namespace SDP_T01_Group06
                         addBudgetBreakdown();
                         validOption = true; // Set flag to true to exit the loop
                         break;
-                    case "0":
-                        return; // Exit the entire editDocument function
                     default:
                         Console.WriteLine("Invalid option.");
                         break; // Loop continues because validOption is still false

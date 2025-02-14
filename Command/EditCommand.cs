@@ -10,14 +10,14 @@ namespace SDP_T01_Group06.Command
     internal class EditCommand : ICommand
     {
         private Document document;
-        private History history; // Reference to the shared History caretaker
+        private History history = new History(); // Reference to the shared History caretaker
 
         //private User user;
 
-        public EditCommand(Document document, History history)
+        public EditCommand(Document document)
         {
             this.document = document;
-            this.history = history;
+            //this.history = history;
             //this.user = user;
         }
 

@@ -13,12 +13,12 @@ namespace SDP_T01_Group06.Command
         private ICommand currentCommand;
         private ICommand[] hotkeys;
         private Stack<ICommand> commandHistory = new Stack<ICommand>();
-        History history = new History();
+        //History history = new History();
 
-        public History History
-        {
-            get { return history; }
-        }
+        //public History History
+        //{
+        //    get { return history; }
+        //}
         public DocumentInvoker()
         {
             this.hotkeys = new ICommand[4];

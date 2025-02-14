@@ -409,8 +409,9 @@ namespace SDP_T01_Group06
             } while (!isValid);
 
             Document selectedDoc = user.getRelatedDocument(choice-1);
-            History history = documentInvoker.History;
-            EditCommand editCommand = new EditCommand(selectedDoc, history);
+            //History history = documentInvoker.History;
+            //EditCommand editCommand = new EditCommand(selectedDoc, history);
+            EditCommand editCommand = new EditCommand(selectedDoc);
             documentInvoker.setCommand(editCommand);
             documentInvoker.executeCommand();
             //selectedDoc.edit();
