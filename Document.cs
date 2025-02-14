@@ -2,6 +2,7 @@ using SDP_T01_Group06.Composite;
 using SDP_T01_Group06.Converter;
 using SDP_T01_Group06.Observer;
 using SDP_T01_Group06.States;
+using SDP_T01_Group06.Memento;
 
 namespace SDP_T01_Group06
 {
