@@ -28,16 +28,14 @@ namespace SDP_T01_Group06.Memento
         //        return FindSectionByPath(root, currentSectionPath);
         //    }
         //}
-        public DocumentSection CurrentSectionClone => (DocumentSection)currentSectionPath.Clone();
         public DocumentState CurrentState => currentState;
         public bool IsEdited => isedited;
 
-        public DocumentMemento(string documentName, DocumentSection rootSection, DocumentSection currentSection, DocumentState state, bool isEdited)
+        public DocumentMemento(string documentName, DocumentSection rootSection, DocumentState state, bool isEdited)
         {
             this.documentName = documentName;
             this.currentState = state;
             this.rootSection = (DocumentSection)rootSection.Clone(); // Create a deep clone
-            this.currentSectionPath = (DocumentSection)currentSection.Clone();
             this.isedited = isEdited;
         }
 

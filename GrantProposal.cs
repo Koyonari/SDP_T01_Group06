@@ -11,32 +11,11 @@ namespace SDP_T01_Group06
         }
         public override void editDocument()
         {
-            bool validOption = false;
-            while (!validOption)
-            {
-                //Console.WriteLine("\n=== Current Document State ===");
-                //Console.WriteLine($"Root section children count: {rootsection.children.Count}");
-                //Console.WriteLine($"Current section: {(currentSection?.SectionName ?? "null")}");
-                //if (currentSection != null)
-                //{
-                //    Console.WriteLine("Current section children:");
-                //    foreach (var child in currentSection.children)
-                //    {
-                //        if (child is DocumentSection ds)
-                //            Console.WriteLine($"- Section: {ds.SectionName}");
-                //        else if (child is DocumentItem di)
-                //            Console.WriteLine($"- Item: {di.Content}");
-                //    }
-                //}
-                //Console.WriteLine($"History count: {history.GetMementos().Count}");
-                //Console.WriteLine("========================\n");
+            bool validOption = false; // Flag to control the loop
 
-                bool exit = selectSection(rootsection, 1);
-                if (exit)
-                {
-                    validOption = true;
-                    return;
-                }
+            while (!validOption) // Loop until a valid option is entered
+            {
+                selectSection(rootsection, 1);
                 Console.WriteLine("What would you like to do?: ");
                 Console.WriteLine("1. Add paragraph");
                 Console.WriteLine("2. Add budget breakdown");
@@ -46,37 +25,18 @@ namespace SDP_T01_Group06
                 switch (option)
                 {
                     case "1":
-                        //Console.WriteLine("\n=== Before Creating Paragraph Memento ===");
-                        DocumentMemento pSnapshot = createMemento();
-                        //Console.WriteLine($"Memento created with root children count: {pSnapshot.RootSectionClone.children.Count}");
-                        history.AddMemento(pSnapshot);
-
-                        //Console.WriteLine("\n=== Adding Paragraph ===");
                         addParagraph();
-
-                        //Console.WriteLine("\n=== After Adding Paragraph ===");
-                        //Console.WriteLine($"Current section children count: {currentSection.children.Count}");
+                        validOption = true; // Set flag to true to exit the loop
                         break;
-
                     case "2":
-                        //Console.WriteLine("\n=== Before Creating Budget Memento ===");
-                        DocumentMemento bSnapshot = createMemento();
-                        //Console.WriteLine($"Memento created with root children count: {bSnapshot.RootSectionClone.children.Count}");
-                        history.AddMemento(bSnapshot);
-
-                        //Console.WriteLine("\n=== Adding Budget ===");
                         addBudgetBreakdown();
-
-                        //Console.WriteLine("\n=== After Adding Budget ===");
-                        //Console.WriteLine($"Current section children count: {currentSection.children.Count}");
+                        validOption = true; // Set flag to true to exit the loop
                         break;
-
                     case "0":
-                        validOption = true;
-                        break;
+                        return; // Exit the entire editDocument function
                     default:
                         Console.WriteLine("Invalid option.");
-                        break;
+                        break; // Loop continues because validOption is still false
                 }
             }
         }
@@ -100,7 +60,7 @@ namespace SDP_T01_Group06
 			Console.WriteLine("Budget Breakdown added to document");
 		}
 
-        //public override DocumentMemento createMemento()
+        //public override DocumentMemento save()
         //{
         //    //Console.WriteLine("In gp.cs:" + this.rootsection.SectionName);
         //    DocumentSection rootSectionClone = this.rootsection?.Clone() as DocumentSection;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SDP_T01_Group06.Memento;
 
 namespace SDP_T01_Group06.Command
 {
@@ -12,7 +13,12 @@ namespace SDP_T01_Group06.Command
         private ICommand currentCommand;
         private ICommand[] hotkeys;
         private Stack<ICommand> commandHistory = new Stack<ICommand>();
+        History history = new History();
 
+        public History History
+        {
+            get { return history; }
+        }
         public DocumentInvoker()
         {
             this.hotkeys = new ICommand[4];
@@ -35,9 +41,9 @@ namespace SDP_T01_Group06.Command
             {
                 currentCommand.execute();
                 if (currentCommand.isUndoable())
+                {
                     commandHistory.Push(currentCommand);
-                // Clear redo stack when a new command is executed
-                //redoStack.Clear();
+                }
             }
         }
 
@@ -49,12 +55,10 @@ namespace SDP_T01_Group06.Command
         // Undo the last command
         public void undoCommand()
         {
-            Console.WriteLine("Undo method called");
             if (commandHistory.Count > 0)
             {
-                ICommand commandToUndo = commandHistory.Pop();
-                commandToUndo.undo();
-                //redoStack.Push(commandToUndo);
+                ICommand lastCommand = commandHistory.Pop();
+                lastCommand.undo();
             }
             else
             {

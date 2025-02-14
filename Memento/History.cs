@@ -45,11 +45,6 @@ namespace SDP_T01_Group06.Memento
             mementos.Clear();
         }
 
-        public Stack<DocumentMemento> GetMementos()
-        {
-            return mementos;
-        }
-
         // Option B: Using a History Method That Restores the Memento
         //public void Undo(Document document)
         //{
@@ -59,7 +54,7 @@ namespace SDP_T01_Group06.Memento
         //        return;
         //    }
         //    DocumentMemento memento = mementos.Pop();
-        //    document.restoreMemento(memento);
+        //    document.restore(memento);
         //}
     }
 }

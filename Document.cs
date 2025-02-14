@@ -19,7 +19,7 @@ namespace SDP_T01_Group06
         protected bool isedited = false;
         protected DocumentSection rootsection;
         protected DocumentSection currentSection;
-        protected History history;
+        //protected History history;
         private List<IObserver> observers;
         private IDocumentConverter conversionStrategy; 
 
@@ -55,7 +55,7 @@ namespace SDP_T01_Group06
             getDocumentName();
             registerObserver(owner);
             
-            history = new History();
+            //history = new History();
         }
 
         public bool hasApprover()
@@ -218,100 +218,53 @@ namespace SDP_T01_Group06
             }
         }
 
-        public bool selectSection(DocumentSection section, int level)
+        public void selectSection(DocumentSection section, int level)
         {
-            // At top level, always start at the root.
-            if (level == 1)
-            {
-                section = this.rootsection;
-            }
-
             Console.WriteLine($"\nYou are in section: {section.SectionName}");
 
-            // If there are no children, let the user confirm this section,
-            // but also offer the save option.
             if (section.children.Count == 0)
             {
                 if (!section.IsEditable)
                 {
                     Console.WriteLine("This section is not editable. Cannot select it.");
-                    return false;
+                    return;
                 }
                 currentSection = section;
                 Console.WriteLine("No sub-sections available. Selected current section: " + section.SectionName);
-
-                // Even here, offer the save option.
-                Console.WriteLine("Type 's' to save changes and exit to the main menu, or press Enter to continue editing in this section.");
-                string inputNoChildren = Console.ReadLine().Trim();
-                if (inputNoChildren.Equals("s", StringComparison.OrdinalIgnoreCase))
-                {
-                    history.Clear();
-                    return true; // signal save/exit
-                }
-                return false;
+                return;
             }
 
-            // Display available components.
             Console.WriteLine("Available components:");
             for (int i = 0; i < section.children.Count; i++)
             {
                 DocumentComponent comp = section.children[i];
                 if (comp is DocumentSection ds)
                 {
+                    // show whether the section is editable to tell users if they can select it for editing or not
                     string editableMark = ds.IsEditable ? "" : " (Not Editable)";
                     Console.WriteLine($"{i + 1}. Section: {ds.SectionName}{editableMark}");
                 }
                 else if (comp is DocumentItem di)
                 {
+                    // even if an item is editable, it cannot be selected as a section cos its a leaf
                     string editableMark = di.IsEditable ? "" : " (Not Editable)";
-                    Console.WriteLine($"{i + 1}. [Leaf] Item: {di.Content}{editableMark} (Cannot be selected as a section)");
+                    Console.WriteLine($"{i + 1}. [Leaf] {di.ElementType}: {di.Content}{editableMark} (Cannot be selected as a section)");
                 }
             }
-
-            // Show the undo and save options.
-            Console.WriteLine("Type 'u' to undo the last change, or 's' to save changes and exit to the main menu.");
 
             while (true)
             {
                 Console.Write($"Enter the number of the component to select (0 to confirm current section, 1-{section.children.Count} to navigate): ");
-                string input = Console.ReadLine().Trim();
+                string input = Console.ReadLine();
 
-                // Check for the undo command.
-                if (input.Equals("u", StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Undo command received. Reverting to the previous state...");
-                    DocumentMemento memento = history.Undo(); // Retrieves the last snapshot.
-                    if (memento != null)
-                    {
-                        restoreMemento(memento);
-                        Console.WriteLine("Undo successful.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No mementos to undo.");
-                    }
-                    // After undoing, re-read the updated state.
-                    DocumentSection updatedSection = (level == 1) ? this.rootsection : this.currentSection;
-                    // Recurse to re-display the selection prompt.
-                    return selectSection(rootsection, level);
-                }
-
-                // Check for the save command.
-                if (input.Equals("s", StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Save command received. Saving current state and clearing undo history. Exiting to main menu...");
-                    history.Clear();
-                    return true; // Signal to exit.
-                }
-
-                // Try parsing the input as a number.
+                // validation
                 if (!int.TryParse(input, out int choice))
                 {
-                    Console.WriteLine("Invalid input. Please enter a numeric value, 'u' to undo, or 's' to save.");
+                    Console.WriteLine("Invalid input. Please enter a numeric value.");
                     continue;
                 }
 
-                // Confirm the current section.
+                // current section
                 if (choice == 0)
                 {
                     if (!section.IsEditable)
@@ -321,10 +274,9 @@ namespace SDP_T01_Group06
                     }
                     currentSection = section;
                     Console.WriteLine($"Confirmed current section: {section.SectionName}");
-                    return false;
+                    return;
                 }
 
-                // Validate the choice range.
                 if (choice < 1 || choice > section.children.Count)
                 {
                     Console.WriteLine($"Invalid selection. Please enter a number between 0 and {section.children.Count}.");
@@ -333,14 +285,12 @@ namespace SDP_T01_Group06
 
                 DocumentComponent selected = section.children[choice - 1];
 
-                // Prevent selecting a leaf node as a section.
-                if (selected is DocumentItem)
+                if (selected is DocumentItem item)
                 {
-                    Console.WriteLine($"Error: '{((DocumentItem)selected).Content}' is an item and cannot be selected as a section.");
+                    Console.WriteLine($"Error: '{item.Content}' is an item and cannot be selected as a section.");
                     continue;
                 }
 
-                // Handle section selection.
                 if (selected is DocumentSection childSection)
                 {
                     if (!childSection.IsEditable)
@@ -348,22 +298,12 @@ namespace SDP_T01_Group06
                         Console.WriteLine($"Error: Section '{childSection.SectionName}' is not editable.");
                         continue;
                     }
-                    // Recursively navigate into the editable sub-section.
-                    bool result = selectSection(childSection, level + 1);
-                    // If the nested call returns true (user saved), propagate that upward.
-                    if (result)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        // Otherwise, continue from this level.
-                        return false;
-                    }
+                    selectSection(childSection, level + 1);
+                    return;
                 }
 
                 Console.WriteLine("Selected component type is not supported.");
-                return false;
+                return;
             }
         }
 
@@ -432,27 +372,26 @@ namespace SDP_T01_Group06
         // -----------------------------------------
         
          // Memento
-         public DocumentMemento createMemento()
+         public DocumentMemento save()
          {
              return new DocumentMemento(
                  this.documentName,
                  this.rootsection,
-                 this.currentSection,
                  this.currentState,
                  this.isedited
              );
          }
 
-         // In Document class, modify restoreMemento:
-         public void restoreMemento(DocumentMemento memento)
-         {  
+         // In Document class, modify restore:
+         public void restore(DocumentMemento memento)
+         {
+            Console.WriteLine("Called2");
              //Console.WriteLine("\n=== Restoring Memento ===");
              //Console.WriteLine($"Before restore - Root children count: {rootsection?.children.Count ?? 0}");
              //Console.WriteLine($"Before restore - Current section: {currentSection?.SectionName ?? "null"}");
 
              this.documentName = memento.DocumentName;
              this.rootsection = memento.RootSectionClone;
-             this.currentSection = memento.CurrentSectionClone;
              this.currentState = memento.CurrentState;
              this.isedited = memento.IsEdited;
 

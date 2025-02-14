@@ -3,6 +3,7 @@ using SDP_T01_Group06.Factory;
 using SDP_T01_Group06.Iterator;
 using SDP_T01_Group06.Command;
 using Spectre.Console;
+using SDP_T01_Group06.Memento;
 
 namespace SDP_T01_Group06
 {
@@ -408,7 +409,8 @@ namespace SDP_T01_Group06
             } while (!isValid);
 
             Document selectedDoc = user.getRelatedDocument(choice-1);
-            EditCommand editCommand = new EditCommand(selectedDoc);
+            History history = documentInvoker.History;
+            EditCommand editCommand = new EditCommand(selectedDoc, history);
             documentInvoker.setCommand(editCommand);
             documentInvoker.executeCommand();
             //selectedDoc.edit();

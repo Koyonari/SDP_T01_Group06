@@ -17,12 +17,7 @@ namespace SDP_T01_Group06
 
             while (!validOption)
             {
-                bool exit = selectSection(rootsection, 1);
-                if (exit)
-                {
-                    validOption = true;
-                    return;
-                }
+                selectSection(rootsection, 1);
                 Console.WriteLine("What would you like to do?: ");
                 Console.WriteLine("1. Add paragraph");
                 Console.WriteLine("2. Add code snippet");
@@ -33,18 +28,15 @@ namespace SDP_T01_Group06
                 switch (option)
                 {
                     case "1":
-                        DocumentMemento pSnapshot = createMemento();
-                        history.AddMemento(pSnapshot);
                         addParagraph();
-                        break;
-                    case "2":
-                        DocumentMemento bSnapshot = createMemento();
-                        history.AddMemento(bSnapshot);
-                        addCodeSnippet();
-                        break;
-                    case "0":
                         validOption = true;
                         break;
+                    case "2":
+                        addCodeSnippet();
+                        validOption = true;
+                        break;
+                    case "0":
+                        return;
                     default:
                         Console.WriteLine("Invalid option.");
                         break;
@@ -71,7 +63,7 @@ namespace SDP_T01_Group06
 			Console.WriteLine("Code Snippet added to document");
 		}
 
-        //public override DocumentMemento createMemento()
+        //public override DocumentMemento save()
         //{
         //    DocumentSection rootSectionClone = this.rootsection?.Clone() as DocumentSection;
         //    DocumentSection currentSectionClone = this.currentSection?.Clone() as DocumentSection;
