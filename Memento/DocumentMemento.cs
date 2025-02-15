@@ -17,18 +17,18 @@ namespace SDP_T01_Group06.Memento
         private DocumentState currentState;
         private bool isedited;
 
-        public string DocumentName => documentName;
-        public DocumentSection RootSectionClone => (DocumentSection)rootSection.Clone();
-        //public DocumentSection CurrentSectionClone
-        //{
-        //    get
-        //    {
-        //        var root = RootSectionClone;
-        //        return FindSectionByPath(root, currentSectionPath);
-        //    }
-        //}
-        public DocumentState CurrentState => currentState;
-        public bool IsEdited => isedited;
+        //public string DocumentName => documentName;
+        //public DocumentSection RootSectionClone => (DocumentSection)rootSection.Clone();
+        ////public DocumentSection CurrentSectionClone
+        ////{
+        ////    get
+        ////    {
+        ////        var root = RootSectionClone;
+        ////        return FindSectionByPath(root, currentSectionPath);
+        ////    }
+        ////}
+        //public DocumentState CurrentState => currentState;
+        //public bool IsEdited => isedited;
 
         public DocumentMemento(string documentName, DocumentSection rootSection, DocumentState state, bool isEdited)
         {
@@ -36,6 +36,28 @@ namespace SDP_T01_Group06.Memento
             this.currentState = state;
             this.rootSection = (DocumentSection)rootSection.Clone(); // Create a deep clone
             this.isedited = isEdited;
+        }
+
+        // Public methods to get the attributes:
+        public string getDocumentName()
+        {
+            return documentName;
+        }
+
+        public DocumentSection getRootSectionClone()
+        {
+            // Return a deep clone of the stored rootSection.
+            return (DocumentSection)rootSection.Clone();
+        }
+
+        public DocumentState getCurrentState()
+        {
+            return currentState;
+        }
+
+        public bool getIsEdited()
+        {
+            return isedited;
         }
 
         //// Helper method to build path from root to current section

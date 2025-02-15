@@ -385,19 +385,23 @@ namespace SDP_T01_Group06
          // In Document class, modify restore:
          public void restore(DocumentMemento memento)
          {
-            Console.WriteLine("Called2");
-             //Console.WriteLine("\n=== Restoring Memento ===");
-             //Console.WriteLine($"Before restore - Root children count: {rootsection?.children.Count ?? 0}");
-             //Console.WriteLine($"Before restore - Current section: {currentSection?.SectionName ?? "null"}");
+            //Console.WriteLine("\n=== Restoring Memento ===");
+            //Console.WriteLine($"Before restore - Root children count: {rootsection?.children.Count ?? 0}");
+            //Console.WriteLine($"Before restore - Current section: {currentSection?.SectionName ?? "null"}");
 
-             this.documentName = memento.DocumentName;
-             this.rootsection = memento.RootSectionClone;
-             this.currentState = memento.CurrentState;
-             this.isedited = memento.IsEdited;
+            //this.documentName = memento.DocumentName;
+            //this.rootsection = memento.RootSectionClone;
+            //this.currentState = memento.CurrentState;
+            //this.isedited = memento.IsEdited;
 
-             //Console.WriteLine($"After restore - Root children count: {rootsection.children.Count}");
-             //Console.WriteLine($"After restore - Current section: {currentSection?.SectionName ?? "null"}");
-             //Console.WriteLine("========================\n");
-         }
+            this.documentName = memento.getDocumentName();
+            this.rootsection = memento.getRootSectionClone();
+            this.currentState = memento.getCurrentState();
+            this.isedited = memento.getIsEdited();
+
+            //Console.WriteLine($"After restore - Root children count: {rootsection.children.Count}");
+            //Console.WriteLine($"After restore - Current section: {currentSection?.SectionName ?? "null"}");
+            //Console.WriteLine("========================\n");
+        }
     }
 }

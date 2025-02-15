@@ -29,6 +29,8 @@ namespace SDP_T01_Group06.Command
             // Delete the document  
             documents.Remove(newDocument);
             user.DocumentList.Remove(newDocument);
+
+            Console.WriteLine("Document has been deleted.");
         }
         public bool isUndoable()
         {

@@ -39,6 +39,7 @@ namespace SDP_T01_Group06.Command
             if (memento != null)
             {
                 document.restore(memento);
+                Console.WriteLine("Edit has been undone.");
             }
             else
             {
