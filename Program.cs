@@ -390,7 +390,8 @@ namespace SDP_T01_Group06
         static void ViewDocumentContents(User user, DocumentInvoker documentInvoker)
         {
 			Console.WriteLine("Available documents:");
-			user.ListRelatedDocuments();
+            documentInvoker.executeHotKey(1);
+			//user.ListRelatedDocuments();
 
 			if (user.DocumentList.Count == 0)
 			{
@@ -419,7 +420,8 @@ namespace SDP_T01_Group06
 		static void EditExistingDocument(User user, DocumentInvoker documentInvoker)
         {
             Console.WriteLine("Available documents:");
-            user.ListRelatedDocuments();
+            documentInvoker.executeHotKey(1);
+            //user.ListRelatedDocuments();
 
             if (user.DocumentList.Count == 0)
             {
