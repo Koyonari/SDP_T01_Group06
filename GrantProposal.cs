@@ -11,9 +11,9 @@ namespace SDP_T01_Group06
         }
         public override void editDocument()
         {
-            bool validOption = false; // Flag to control the loop
+            bool validOption = false; //flag to control the loop
 
-            while (!validOption) // Loop until a valid option is entered
+            while (!validOption)
             {
                 selectSection(rootsection, 1);
                 Console.WriteLine("What would you like to do?: ");
@@ -26,15 +26,15 @@ namespace SDP_T01_Group06
                 {
                     case "1":
                         addParagraph();
-                        validOption = true; // Set flag to true to exit the loop
+                        validOption = true; 
                         break;
                     case "2":
                         addBudgetBreakdown();
-                        validOption = true; // Set flag to true to exit the loop
+                        validOption = true;
                         break;
                     default:
                         Console.WriteLine("Invalid option.");
-                        break; // Loop continues because validOption is still false
+                        break;
                 }
             }
         }

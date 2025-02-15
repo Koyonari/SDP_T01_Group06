@@ -160,6 +160,7 @@ namespace SDP_T01_Group06
                              "View Notifications",
                             "Create a new document",
                             "Edit existing document",
+                            "View existing document contents",
                             "Add Collaborator to a document",
                             "Nominate Approver for a document",
                             "Submit existing document for approval",
@@ -182,7 +183,10 @@ namespace SDP_T01_Group06
                     case "Create a new document":
                         CreateNewDocument(currentUser, allDocuments, documentInvoker);
                         break;
-                    case "Edit existing document":
+					case "View existing document contents":
+						ViewDocumentContents(currentUser, documentInvoker);
+						break;
+					case "Edit existing document":
                         EditExistingDocument(currentUser, documentInvoker);
                         break;
                     case "Add Collaborator to a document":
@@ -383,7 +387,36 @@ namespace SDP_T01_Group06
             allDocuments.Add(doc1);
         }
 
-        static void EditExistingDocument(User user, DocumentInvoker documentInvoker)
+        static void ViewDocumentContents(User user, DocumentInvoker documentInvoker)
+        {
+			Console.WriteLine("Available documents:");
+			user.ListRelatedDocuments();
+
+			if (user.DocumentList.Count == 0)
+			{
+				Console.WriteLine("No documents available for editing.");
+				return;
+			}
+
+			int choice;
+			bool isValid;
+			do
+			{
+				Console.Write("Enter the index of the document to edit: ");
+				isValid = int.TryParse(Console.ReadLine(), out choice);
+				isValid = isValid && choice >= 1 && choice <= user.getNoOfRelatedDocuments();
+
+				if (!isValid)
+				{
+					Console.WriteLine($"Invalid input. Please enter a number between 1 and {user.getNoOfRelatedDocuments()}.");
+				}
+			} while (!isValid);
+
+			Document selectedDoc = user.getRelatedDocument(choice - 1);
+			Console.WriteLine($"\nSelected Document: {selectedDoc.DocumentName}");
+			selectedDoc.displayDocumentContent();
+		}
+		static void EditExistingDocument(User user, DocumentInvoker documentInvoker)
         {
             Console.WriteLine("Available documents:");
             user.ListRelatedDocuments();
