@@ -14,7 +14,6 @@ namespace SDP_T01_Group06.Memento
     {
         private string documentName;
         private DocumentSection rootSection;
-        private DocumentSection currentSectionPath; // Store path instead of section reference
         private DocumentState currentState;
         private bool isedited;
 

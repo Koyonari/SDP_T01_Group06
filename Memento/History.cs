@@ -8,7 +8,7 @@ namespace SDP_T01_Group06.Memento
 {
     public class History
     {
-        private Stack<DocumentMemento> mementos;
+        private Stack<DocumentMemento> mementos;    
 
         public History()
         {
